@@ -26,6 +26,8 @@ the standardized set of things all .NET implementations have.
 implementations:
     .NET Framework
         from 2002, original implementation, Windows-only
+        deprecated in favor of .NET 5, but still very common in legacy code.
+        still supported with bugfixes and security fixes.
         last version 4.8 released 2019
         gets updates from Windows Update
         CLR common language runtime (VES)
@@ -43,11 +45,15 @@ implementations:
         gets updates from manual installs / NuGet
         .NET Framework frameworks were gradually ported to or redesigned for Core
             (like EF Core, EF 6, ASP.NET Core, WinForms, WPF), finished though
+        last version 3.1 released 2019
         CoreCLR (VES)
             the CLR for Core
             has a JIT as well, RyuJIT
             all the features of the CLR
         CoreFX (Standard Libraries)
+    .NET
+        the latest version of .NET Core, rebranded to encourage more migration from .NET Framework,
+        now that it's a lot more complete than it used to be.
     Mono
         from 2004, open source, cross-platform (Unix)
             originally reverse-engineered from .net framework
@@ -66,14 +72,6 @@ implementations:
         .NET Compact Framework (Windows Phone)
         Micro Framework (embedded) (new 3rd party successor nanoFramework)
         Portable.NET (hostile 3rd party GNU version)
-
-future plans (late 2020+)
-    deprecate .NET Framework (but keep it supported with fixes)
-    keep CoreCLR and Mono runtimes, converge them so they
-        are more interchangable
-    rename .NET Core as .NET
-    transition to using nullable reference types in C#
-    move Mono/Xamarin to use CoreFx
 
 managed code
     portability (same platform, different architecture)
