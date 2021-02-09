@@ -1,0 +1,16 @@
+VS Code
+    text editor / IDE for many languages
+    VS Code can open folders as well as files
+    we can configure its built-in terminal to be Git Bash
+        instead of default Powershell.
+.NET Core SDK
+    helps us compile and run C#
+    dotnet CLI
+        dotnet new
+            create new .NET projects
+            e.g. "dotnet new console" - new console application template.
+        dotnet restore
+        dotnet build
+        dotnet run
+Git for Windows
+    installs Git Bash

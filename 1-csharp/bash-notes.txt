@@ -1,0 +1,68 @@
+bash is a shell program that lets us run many programs
+    using a text-based interface.
+
+some commands:
+    cd <dir>
+        change directory, can be absolute (like "/c/revature")
+        or relative (like "my-project" in the current folder)
+        ".." means, the parent of the current folder.
+    ls <dir>
+        list contents of a directory
+        (or the current directory, by default)
+    mkdir <dir>
+        create a directory
+    rm <path>
+        delete a file
+    rm -r <path>
+        delete a directory with its contents
+    mv <path1> <path2>
+        rename/move a file/directory
+    touch <path>
+        create an empty file
+    pwd
+        print working directory (folder you're in right now)
+
+some other things to know:
+    .. means parent directory
+        (we can chain it, e.g. cd ../../notes)
+    . means current directory (e.g. explorer .)
+    absolute paths
+        start with /
+        means the same no matter your current folder.
+        e.g. /c/revature/trainer-code
+    relative paths
+        do not start with /
+        are relative to the current folder.
+    variables, $
+    PATH
+
+exercises (with just the command line):
+    1. create an empty file
+        touch myfile.txt
+    2. rename that file
+        mv myfile.txt newfile.txt
+    3. create a new folder
+        mkdir myfolder
+    4. move the file into the folder
+        mv newfile.txt myfolder
+    5. delete the folder including its contents
+        rm -r myfolder
+
+    6. look up "echo" and use it to output some text.
+        echo "My name is Nick"
+    7. look up "which" and use it to find where dotnet is installed.
+        which dotnet
+    8. look up "grep" and use it to search a file for some text.
+        grep grep notes/bash-notes.txt
+    9. look up "find" and use it to search for all .txt files in some folder.
+        find . -name "*.txt"
+    10. look up "cat" and use it to show file contents.
+        cat .gitignore
+    11. use echo to make a new file with some contents.
+        echo "text" > filename.txt
+
+|, >, >>
+* stands for 0 or more of any character.
+bash keeps history of all your typed commands
+    up-arrow accesses history.
+tab completion
