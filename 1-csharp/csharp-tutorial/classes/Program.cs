@@ -51,6 +51,7 @@ namespace classes
             savings.MakeDeposit(1250, DateTime.Now, "Add more savings");
             savings.MakeWithdrawal(250, DateTime.Now, "Needed to pay monthly bills");
             savings.PerformMonthEndTransactions();
+
             Console.WriteLine(savings.GetAccountHistory());
 
             var lineOfCredit = new LineOfCreditAccount("line of credit", 0, 2000);

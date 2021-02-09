@@ -6,6 +6,13 @@ namespace NumbersInCSharp
     {
         static void WorkingWithIntegers()
         {
+            // in .net, a variable is a slot that can contain some value
+            // when you create the variable, you choose a data type.
+            // that type cannot change, but the value can change.
+            // all types (like string, int, Program, List) are in one of two categories:
+            //    reference type, value type
+            //   more granularly: class, interfaces, structs, enums, delegate, event
+
             int a = 18;
             int b = 6;
 
@@ -102,16 +109,24 @@ namespace NumbersInCSharp
             Console.WriteLine(c / d);
         }
 
-        static void Challenge()
+        static double Challenge()
         {
             double radius = 2.5;
             double area = Math.PI * radius * radius;
-            Console.WriteLine(area);
+            // Console.WriteLine(area);
+            return area;
         }
 
+        // in .net, when a program runs, there needs to be exactly one Main method.
+        // that is where execution starts.
+        // a method is a sequence of statements associated with some class
+        //      it can take some arguments, and optionally return a value.
+        // execution of code goes line by line through the Main method,
+        //    and in the meantime, through each line of some method _called_by Main.
         static void Main(string[] args)
         {
             WorkingWithIntegers();
+
 
             OrderPrecedence();
 
@@ -121,7 +136,7 @@ namespace NumbersInCSharp
 
             WorkWithDecimals();
 
-            Challenge();
+            Console.WriteLine(Challenge());
         }
     }
 }
