@@ -1,3 +1,4 @@
+https://docs.microsoft.com/en-us/dotnet/core/introduction
 https://docs.microsoft.com/en-us/dotnet/standard/components
 https://docs.microsoft.com/en-us/dotnet/standard/glossary
 
@@ -67,7 +68,7 @@ implementations:
     UWP
         for windows 10/xbox apps
         uses .NET Native AOT compiler & runtime (VES)
-        CoreFx (Standard Libraries), same as .NET Core
+        CoreFx (Standard Libraries), same as .NET Core/5
     older kinda abandoned implementations:
         .NET Compact Framework (Windows Phone)
         Micro Framework (embedded) (new 3rd party successor nanoFramework)
