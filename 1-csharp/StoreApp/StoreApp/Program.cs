@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using StoreApp.Library;
 
 namespace StoreApp
 {
@@ -23,6 +24,7 @@ namespace StoreApp
         //        (doesn't have a Main method)
         //
 
+        // dotnet add reference ../StoreApp.Library/
 
         static void Main(string[] args)
         {
