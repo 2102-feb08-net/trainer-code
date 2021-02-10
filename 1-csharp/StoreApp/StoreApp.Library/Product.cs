@@ -7,8 +7,29 @@ using System;
 namespace StoreApp.Library
 {
     // encapsulation: a class should own its own data and enforce rules on it
+    //    one important kind of rule goes like "a valid ____ always has _____"
+
+    // in C#, the only way to make an instance of a class (object)
+    // is by calling one of the class's constructors.
+
+    // when you design a class, you get to decide what are all the valid ways to
+    // make a new instance of that class. each one will be a constructor.
     public class Product
     {
+        // the method name & return type are combined in a ctor
+
+        // this ctor here (zero arguments, no contents)
+        //  is added by default to every class without an explicit written ctor.
+        // public Product()
+        // {
+        // }
+
+        public Product(string name)
+        {
+            // "this" is a keyword that refers to the current instance of this class
+            Name = name;
+        }
+
         // public class members: can be referenced outside their class.
         // private class members: cannot. (private is the default)
 
@@ -48,6 +69,12 @@ namespace StoreApp.Library
         public string Id { get; set; }
         // (there's a hidden backing field added by the compiler, but i don't have to write it)
 
+
+        // often in code we want a custom data type that can hold only one of a set collection of possible values.
+        // like how bool only allows true and false, unlike string which has infinite possible values
+
+        // so, you can define your own enumerations, or "enum" types.
+        private DayOfWeek _saleDay = DayOfWeek.Friday;
 
         // public bool CheckValidity()
         // {
