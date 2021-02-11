@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
+using System.Text;
 using StoreApp.Library;
 
 namespace StoreApp
@@ -37,12 +39,21 @@ namespace StoreApp
             table.Price = 50.0;
             products.Add(table);
 
-            Console.WriteLine("Enter a new price for the table: ");
-            string input = Console.ReadLine();
-            double newPrice = double.Parse(input);
-            table.Price = newPrice;
+            string input;
+            do
+            {
+                Console.WriteLine("Enter 'f' to write to file, 'p' to print to console: ");
+                input = Console.ReadLine();
+            } while (!(input == "f" || input == "p"));
 
-            DisplayProductList(products);
+            if (input == "f")
+            {
+                WriteProductListToFile(products, "output.txt");
+            }
+            else
+            {
+                DisplayProductList(products);
+            }
         }
 
         static void DisplayProductList(List<Product> products)
@@ -51,6 +62,28 @@ namespace StoreApp
             {
                 Console.WriteLine($"{product.Name}\t${product.Price}");
             }
+        }
+
+        static void WriteProductListToFile(List<Product> products, string fileName)
+        {
+            // file I/O
+            // write UTF8 overwriting any existing file
+            var stream = new StreamWriter(path: fileName, append: false, encoding: Encoding.UTF8);
+
+            foreach (var product in products)
+            {
+                stream.WriteLine($"{product.Name}\t${product.Price}");
+            }
+
+            stream.Close();
+
+            // any time you access unmanaged resources (like files on disk) from managed code like C#,
+            // you need to call some method to clean up that resource when you're done explicitly.
+            // if C# was an unmanaged language, wyou'd have to do that for all resources, including your own
+            // objects on the heap.
+
+            // usually either a Close() method or a Dispose() method.
+            //    (Dispose() method is associated with IDisposable interface)
         }
 
         // arrays and other collections in C#
