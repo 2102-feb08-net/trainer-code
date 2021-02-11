@@ -2,7 +2,7 @@
 
 namespace rockpaperscissors
 {
-    class Computer : Player
+    public class Computer : Player
     {
         
 

@@ -2,7 +2,7 @@ using System;
 
 namespace rockpaperscissors
 {
-    class Player
+    public class Player
     {
         public string Name { get; }
 
