@@ -29,8 +29,15 @@ namespace StoreApp
 
         // dotnet add reference ../StoreApp.Library/
 
+        // refactor - reorganize code without changing its functionality
+        //  versus - implementing/changing functionality
+
         static void Main(string[] args)
         {
+            //var outputter = new Outputter();
+            Inputter inputter = new(); // target-typed new
+            Outputter outputter = new(); // target-typed new
+
             var products = new List<Product>();
             var coffee = new Product("coffee");
             coffee.Price = 5.0;
@@ -42,8 +49,8 @@ namespace StoreApp
             string input;
             do
             {
-                Console.WriteLine("Enter 'f' to write to file, 'p' to print to console: ");
-                input = Console.ReadLine();
+                outputter.Output("Enter 'f' to write to file, 'p' to print to console: ");
+                input = inputter.GetInput();
             } while (!(input == "f" || input == "p"));
 
             if (input == "f")
@@ -52,15 +59,15 @@ namespace StoreApp
             }
             else
             {
-                DisplayProductList(products);
+                DisplayProductList(products, outputter);
             }
         }
 
-        static void DisplayProductList(List<Product> products)
+        static void DisplayProductList(List<Product> products, Outputter outputter)
         {
             foreach (var product in products)
             {
-                Console.WriteLine($"{product.Name}\t${product.Price}");
+                outputter.Output($"{product.Name}\t${product.Price}");
             }
         }
 
