@@ -27,6 +27,9 @@ namespace StoreApp
         //        (doesn't have a Main method)
         //
 
+        // single responsiblity principle
+        //    a method, class, project, should have just one responsiblity, not combining many
+
         // dotnet add reference ../StoreApp.Library/
 
         // refactor - reorganize code without changing its functionality
