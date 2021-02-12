@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Xunit;
 
 namespace rockpaperscissors.Tests
@@ -20,6 +21,33 @@ namespace rockpaperscissors.Tests
 
             // assert
             throw new NotImplementedException();
+        }
+
+        //[Fact]
+        //public void Test()
+        //{
+        //    // arrange
+        //    var outputter = new FakeOutputter();
+        //    var game = new Game(outputter);
+
+        //    // act
+        //    game.PlayRound();
+        //}
+    }
+
+    // a better way of doing this is a mocking framework like Moq
+    public class FakeOutputter : IOutputter
+    {
+        public List<string> History { get; set; } = new List<string>();
+
+        public void Write()
+        {
+            History.Add(null);
+        }
+
+        public void Write(string s)
+        {
+            History.Add(s);
         }
     }
 }

@@ -11,7 +11,6 @@ namespace rockpaperscissors
             Name = playerName;
         }
 
-
         public virtual Move GetMove()
         {
             /*
