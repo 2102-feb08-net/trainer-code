@@ -3,6 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using System.Text.Json;
+using System.Threading.Tasks;
 using StoreApp.Library;
 
 namespace StoreApp
@@ -35,7 +37,7 @@ namespace StoreApp
         // refactor - reorganize code without changing its functionality
         //  versus - implementing/changing functionality
 
-        static void Main(string[] args)
+        static async Task Main(string[] args)
         {
             //var outputter = new Outputter();
             Inputter inputter = new(); // target-typed new
@@ -58,7 +60,7 @@ namespace StoreApp
 
             if (input == "f")
             {
-                WriteProductListToFile(products, "output.txt");
+                await WriteProductListToFileAsync(products, "output.txt");
             }
             else
             {
@@ -74,18 +76,57 @@ namespace StoreApp
             }
         }
 
-        static void WriteProductListToFile(List<Product> products, string fileName)
+        static async Task WriteProductListToFileAsync(List<Product> products, string fileName)
         {
+            // serialize to json with system.text.json
+
+            // serialize to string:
+            string json = JsonSerializer.Serialize(products);
+
             // file I/O
             // write UTF8 overwriting any existing file
-            var stream = new StreamWriter(path: fileName, append: false, encoding: Encoding.UTF8);
-
-            foreach (var product in products)
+            StreamWriter stream = null;
+            try
             {
-                stream.WriteLine($"{product.Name}\t${product.Price}");
-            }
+                stream = new StreamWriter(path: fileName, append: false, encoding: Encoding.UTF8);
 
-            stream.Close();
+                //stream.Write(json);
+                await stream.WriteAsync(json);
+            }
+            finally
+            {
+                if (stream != null)
+                {
+                    stream.Close();
+                }
+            }
+            // instead of all that, we can write:
+            using (StreamWriter stream2 = new StreamWriter(path: fileName, append: false, encoding: Encoding.UTF8))
+            {
+                await stream2.WriteAsync(json);
+            } // the using statement works on any IDisposable object, and calls Dispose at the end of the block,
+              // even if an exception was thrown (like finally)
+
+            using StreamWriter stream3 = new StreamWriter(path: fileName, append: false, encoding: Encoding.UTF8);
+            await stream3.WriteAsync(json);
+
+            // in your .NET program, sometimes you need to do something that involves a LOT of waiting from the CPU's perspective.
+            //  example: you need to read/write a file.
+            // async is useful when you have other useful work you could be doing in the meantime.
+
+            // steps to using async:
+            // 1. identify the Async version of the method you want to call on whatever object it is. call that method.
+            // 2. await the Task that method returns.
+            // 3. make the current method async.
+            //    the method's return type goes from void to Task, and from T to Task<T>.
+            //    (by convention) add the Async suffix to the method's name.
+            // 4. continue from step 1 for any of your methods that need to call the one you just set up.
+
+            //foreach (var product in products)
+            //{
+            //    stream.WriteLine($"{product.Name}\t${product.Price}");
+            //}
+
 
             // any time you access unmanaged resources (like files on disk) from managed code like C#,
             // you need to call some method to clean up that resource when you're done explicitly.

@@ -23,11 +23,19 @@ namespace rockpaperscissors
         {
         }
 
-        public Game(IOutputter outputter, string playerName) 
+        public Game(IOutputter outputter, string playerName)
         {
             this.history = new List<RoundResult>();
             this.player = new Player(playerName);
             this.computer = new Computer();
+            _outputter = outputter;
+        }
+
+        public Game(IOutputter outputter, string playerName, Computer computer)
+        {
+            this.history = new List<RoundResult>();
+            this.player = new Player(playerName);
+            this.computer = computer;
             _outputter = outputter;
         }
 
