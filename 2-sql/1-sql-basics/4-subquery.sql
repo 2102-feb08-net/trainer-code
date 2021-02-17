@@ -40,7 +40,6 @@ SELECT TrackId FROM Track
 EXCEPT
 SELECT TrackId FROM InvoiceLine;
 
-
 -------
 
 -- exercises
@@ -52,8 +51,38 @@ SELECT TrackId FROM InvoiceLine;
 -- 1. which artists did not make any albums at all?
 
 -- 2. which artists did not record any tracks of the Latin genre?
+SELECT *
+FROM Artist
+WHERE ArtistId NOT IN ( -- all the artists who wrote such an album
+	SELECT ArtistId FROM Album WHERE AlbumId IN ( -- all the albums with a latin song
+		SELECT AlbumId
+		FROM Track           -- all the genres named latin
+		WHERE GenreId IN (SELECT GenreId FROM Genre WHERE Name = 'Latin')
+	)
+);
+
+-- join + set-op version
+SELECT * FROM Artist
+EXCEPT
+SELECT ar.*
+FROM Artist AS ar
+	INNER JOIN Album AS al ON ar.ArtistId = al.ArtistId
+	INNER JOIN Track AS t ON al.AlbumId = t.AlbumId
+	INNER JOIN Genre AS g ON t.GenreId = g.GenreId
+WHERE g.Name = 'Latin';
 
 -- 3. which video track has the longest length? (use media type table)
+SELECT * FROM Track WHERE Milliseconds = (
+	SELECT MAX(t.Milliseconds)
+	FROM Track AS t
+		INNER JOIN MediaType AS mt ON mt.MediaTypeId = t.MediaTypeId
+	WHERE mt.Name LIKE '%video%');
+
+SELECT * FROM Track WHERE Milliseconds >= ALL (
+	SELECT t.Milliseconds
+	FROM Track AS t
+		INNER JOIN MediaType AS mt ON mt.MediaTypeId = t.MediaTypeId
+	WHERE mt.Name LIKE '%video%'); -- not exactly right
 
 -- 4. find the names of the customers who live in the same city as the
 --    boss employee (the one who reports to nobody)
