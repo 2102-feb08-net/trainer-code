@@ -25,6 +25,7 @@ SELECT FirstName, LastName FROM Customer;
 
 -- all columns
 SELECT * FROM Customer;
+SELECT * FROM Employee;
 
 -- columns in the result set don't need to directly match columns in a table
 SELECT FirstName + ' ' + LastName FROM Customer;
@@ -128,6 +129,9 @@ ORDER BY SUM(Total) DESC, CustomerId;
 -- 2. list all customers from brazil
 
 -- 3. list all sales agents
+SELECT *
+FROM Employee
+WHERE Title = 'Sales Support Agent';
 
 -- 4. show a list of all countries in billing addresses on invoices.
 
