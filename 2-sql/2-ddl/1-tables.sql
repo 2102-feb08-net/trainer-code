@@ -98,3 +98,55 @@ INSERT INTO ChatApp.Message(Contents, SenderId, ReceiverId) VALUES
 	('hello',
 		(SELECT Id FROM ChatApp.Person WHERE Username = 'fred123'),
 		(SELECT Id FROM ChatApp.Person WHERE Username = 'nick456'));
+
+-- multiplicity of a relationship between data/entities
+--   1-to-1 (one-to-one)
+		-- in SQL: put the data for both entities in the same table/row
+		--      or, put it in a separate table, and have a UNIQUE FOREIGN KEY on one of them.
+
+--   1-to-n (one-to-many)
+		-- in SQL: two tables, with a FK on the "many" side.
+
+--   n-to-n (many-to-many)
+		-- in SQL: "sql doesn't support many-to-many relationship"
+		--        we can simulate it with two 1-to-many relationships
+		--    introduce a new table, give it two foreign keys to the two preexisting tables.
+		--      we call this "join table" or "junction table"
+
+
+
+
+
+-- FK can be created with ON DELETE and ON UPDATE behaviors
+--   to control what happens when the referenced PK value changes/is deleted.
+
+-- ON DELETE CASCADE
+--   if the target of the FK is deleted, this row should also delete itself.
+-- ON DELETE SET NULL
+--                                       this column's value should turn itself NULL
+-- ON UPDATE   "  "
+
+
+
+
+
+-- indexes
+-- data structures that we can have sql server maintain during writes
+-- so that reads can be faster.
+
+-- in SQL Server:
+   -- clustered index
+        -- tells sql server what order to 'physically' arrange the table in.
+		-- can only be one
+		-- by default, PRIMARY KEY sets CLUSTERED INDEX.
+   -- nonclustered index
+		-- maintains a separate data structure analogous to an index at the end of
+		-- and enyclopedia
+		-- we can have many of these.
+		-- UNIQUE sets nonclustered index by default
+
+-- you want indexes on the columns/sets of columns that you usually reference
+-- in the JOIN or WHERE conditions. (foreign keys are a good candidate)
+
+--Dictionary<int, Data>
+--Dictionary<string, List<Data>>
