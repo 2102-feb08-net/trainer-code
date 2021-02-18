@@ -1,0 +1,100 @@
+-- DDL -
+-- CREATE, ALTER, DROP
+-- e.g. CREATE TABLE, ALTER TABLE, DROP TABLE
+
+--CREATE DATABASE ChinookNumberTwo;
+
+-- schema is like namespace in C#
+CREATE SCHEMA ChatApp;
+GO
+-- in SQL Server, the default schema is dbo
+
+CREATE TABLE ChatApp.Person (
+	Username NVARCHAR(100)
+);
+
+SELECT * FROM ChatApp.Person;
+
+ALTER TABLE ChatApp.Person ADD
+	AccountCreated DATETIME2;
+
+INSERT INTO ChatApp.Person(Username, AccountCreated) VALUES
+	('user123', SYSUTCDATETIME());
+
+SELECT MONTH(AccountCreated) FROM ChatApp.Person;
+
+-- we can put constraints on table columns.
+-- NOT NULL vs NULL.
+-- by default, all columns can accept NULL as a possible value (and as their default).
+--   this can be explicitly marked by putting NULL after the column definition
+
+-- NOT NULL prevents NULL, and leaves the column without a default value.
+
+-- CHECK constraint
+--  define an arbitrary expression about one column's value, or relating the
+--     values of several columns, that must be true for every row after every modification
+
+-- DEFAULT
+--   provide a different default to the column apart from NULL
+
+-- UNIQUE
+--   all the rows in this table must have unique values for that column.
+--   can also put it on multiple columns taken together, like (City,State)
+
+-- IDENTITY
+--   prevents manually setting the column's value; auto-incrementing value
+--   for each new row.
+
+-- PRIMARY KEY
+--   implies NOT NULL and UNIQUE
+--   the column that will identify the row from the point of view of other rows.
+--   adds a clustered index by default on the column
+--     (the table will be stored in primary key order)
+
+-- FOREIGN KEY
+--   allow this column to reference another row, possibly in another table
+
+DROP TABLE ChatApp.Person;
+
+CREATE TABLE ChatApp.Person (
+	Id INT NOT NULL IDENTITY,
+	Username NVARCHAR(100) NOT NULL CHECK(LEN(Username) > 4) UNIQUE,
+	AccountCreated DATETIME2 NULL
+		CHECK(AccountCreated < SYSUTCDATETIME())
+		DEFAULT (SYSUTCDATETIME()),
+	CONSTRAINT PK_Id PRIMARY KEY (Id)
+);
+
+-- the database is the performance bottleneck
+--    (because the database is hard to scale, the app code is easy to scale)
+
+ALTER TABLE ChatApp.Person DROP CONSTRAINT CK__Person__AccountC__09A971A2;
+
+INSERT INTO ChatApp.Person(Username) VALUES
+	('fred123');
+
+SELECT * FROM ChatApp.Person;
+
+CREATE TABLE ChatApp.Message (
+	Id INT NOT NULL IDENTITY,
+	Contents NVARCHAR(1000) NOT NULL,
+	SenderId INT NOT NULL,
+	ReceiverId INT NOT NULL,
+	CHECK (SenderId != ReceiverId)
+);
+
+ALTER TABLE ChatApp.Message ADD CHECK (SenderId != ReceiverId);
+
+ALTER TABLE ChatApp.Message ADD CONSTRAINT
+	FK_Message_Sender_Person FOREIGN KEY (SenderId) REFERENCES ChatApp.Person(Id);
+
+ALTER TABLE ChatApp.Message ADD CONSTRAINT
+	FK_Message_Receiver_Person FOREIGN KEY (ReceiverId) REFERENCES ChatApp.Person(Id);
+
+INSERT INTO ChatApp.Person(Username) VALUES
+	('nick456');
+
+INSERT INTO ChatApp.Message(Contents, SenderId, ReceiverId) VALUES
+	('hello',
+		(SELECT Id FROM ChatApp.Person WHERE Username = 'fred123'),
+		(SELECT Id FROM ChatApp.Person WHERE Username = 'nick456'));
