@@ -85,9 +85,9 @@ namespace RestaurantReviews.DataAccess.Repositories
 
             s_logger.Info($"Adding restaurant");
 
+            // ID left at default 0
             var entity = new Restaurant
             {
-                Id = restaurant.Id,
                 Name = restaurant.Name,
                 Review = restaurant.Reviews.Select(r => new Review
                 {
@@ -97,7 +97,6 @@ namespace RestaurantReviews.DataAccess.Repositories
                     Text = r.Text
                 }).ToList()
             };
-            entity.Id = 0;
             _dbContext.Add(entity);
         }
 
