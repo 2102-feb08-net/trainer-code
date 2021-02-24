@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Exercise</title>
+
+    <link rel="stylesheet" type="text/css" media="screen" href="main.css">
+</head>
+
+<body>
+    <header>
+        <img src="https://www.w3.org/html/logo/downloads/HTML5_1Color_Black.png" width="100px" alt="HTML 5 logo">
+    </header>
+    <h1>About</h1>
+
+    <p>Some text about this website</p>
+
+    <h2>Our Locations</h2>
+    <p>
+        <ul>
+            <li>USA</li>
+            <ul>
+                <li><a href="#">New York</a></li>
+                <li><a href="#">Columbus</a></li>
+                <li><a href="#">Austin</a></li>
+                <li><a href="#">Philly</a></li>
+            </ul>
+            <li>World</li>
+            <ul>
+                <li><a href="#">Ottawa</a></li>
+                <li><a href="#">Sydney</a></li>
+            </ul>
+        </ul>
+    </p>
+
+    <h2>Upcoming Classes</h2>
+    <p>
+        <table>
+            <thead>
+                <tr>
+                    <th>Location</th>
+                    <th>Topic</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>New York</td>
+                    <td>Javascript & jQuery</td>
+                </tr>
+                <tr>
+                    <td>San Francisco</td>
+                    <td>HTML & CSS</td>
+                </tr>
+            </tbody>
+        </table>
+    </p>
+
+    <h2>Sign up!</h2>
+    <form method="POST" action="">
+        Name: <input type="text" name="name">
+        <br>
+        Email: <input type="email" name="email">
+        <br>
+        Location:
+        <select name="location">
+            <option value="NY">New York</option>
+            <option value="SF" selected>San Francisco</option>
+        </select>
+
+        <fieldset>
+            <legend>Gender:</legend>
+            <label>
+                Female <input type="radio" name="gender" value="female">
+            </label>
+            <label>
+                Male <input type="radio" name="gender" value="male">
+            </label>
+        </fieldset>
+        <label>Experience: <br>
+            <textarea rows="5" cols="20" name="experience"></textarea>
+        </label>
+        <br>
+        <input type="submit" value="Sign Up">
+    </form>
+
+    <footer>
+        <a href="https://twitter.com">Twitter</a>
+        |
+        <a href="https://facebook.com">Facebook</a>
+        |
+        <a href="https://flickr.com">Flickr</a>
+    </footer>
+
+</body>
+
+</html>
