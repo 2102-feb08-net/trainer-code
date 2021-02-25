@@ -1,0 +1,28 @@
+.fox {
+    border: 6px solid orange;
+    width: 350px;
+    height: 150px;
+}
+
+.scroller .sentence:first-child {
+    text-decoration: underline;
+    font-weight: bold;
+}
+
+.scroller {
+    background-color: yellow;
+    border: 4px dashed orange;
+    width: 300px;
+    height: 200px;
+    overflow-y: scroll;
+    margin-top: 15px;
+}
+
+main {
+    background-color: palegoldenrod;
+    border: 3px solid maroon;
+    margin: auto;
+    width: 400px;
+    padding: 10px;
+    font-size: 1.3em;
+}

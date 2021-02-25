@@ -1,0 +1,185 @@
+- Introduction to CSS
+    we apply css rules to elements - some set of property-value pairs (declarations),
+      to some set of elements defined by a selector
+    p { color: red; }
+    selector(s) { property: value; }
+    declarations semicolon separated
+    comments /* */
+    cascade
+      which declarations override which other declarations?
+      1. author styles & importance
+        special override: put "!important" after a rule, it will win over all unimportant rules.
+        but don't use this - instead, use specificity
+        author styles (provided by website author) override user-agent styles (browser defaults)
+      2. specificity
+        how specific is the rule, heuristic for how many elements it could match
+          100 for each id selector
+          10 for each class selector
+          1 for each element selector
+      3. source order
+        tie break. which one was defined last
+    inheritance
+      SOME properties are inherited by children, if it makes sense.
+      font options are inherited, color options are inherited (you have to UNset them in the children if you don't want that)
+      margin, border, padding not inherited. (you have to set them again in the children if you want that)
+      can be customized.
+- Box Model
+    margin border padding
+    top right bottom left
+        shorthand properties
+- Properties and Rules
+- Typography and Coloring
+    font-style (italic, etc)
+    font-size
+    font-family (sans-serif, serif, monospace)
+    color: #00ff00, or web names (sets foreground color)
+    background-color
+- Position and Display
+  position:
+    static (the default)
+    relative (does nothing by itself; defines meaning of top, right, bottom, left: relative to its normal position)
+    absolute (move it out of the normal document flow, onto its own layer.
+      span 100% of parent's width, and whatever height its children needs.
+      top, right, bottom, left now mean, distance from the walls of the page --
+        or, if it's inside some "relative" element -- distance from the walls of that element)
+    fixed (fixed in the browser's viewport, regardless of scrolling.)
+  display:
+    block (like a block element)
+      float property modifies block element flow - lets e.g. other text flow around it to the left or the right.
+    inline (like an inline element)
+    flex - layout children of this element with Flexbox, configured with other properties
+      like justify-content
+    none (turn off display of the element, as though it weren't even there in the DOM.)
+  visibility: hidden (invisible but still takes up space)
+
+DOM, document object model.
+html and css text format is the serialized form
+in browser memory, it is the DOM
+
+selectors
+    * - all
+    tag - header, div span
+    class - *.<classname> == .<classname>
+        <tag>.<classname> ==
+    id - #<idname>
+        id is most efficient way to select a single element
+    [attribute=value] - attr has value
+    [attribute~=value] attr contains val in its val
+        other similar attribute selectors
+    combinators:
+        div, div - one or the other, both
+        div div - ancestor descendant
+        div>div - parent child
+        p+div immediate next sibling
+        p~div any sibling
+
+"#Region2 .latitude"
+    any element with class "latitude" somewhere within the element with id "Region2"
+
+pseudo-class selectors
+    elements that exist in some special state or another
+<selector> : link
+           : active (being clicked on)
+           : visited (visited link)
+           : focus (keyboard select with tab or click)
+           : valid
+           : invalid
+           : blur
+           : hover (moused over)
+           : nth-child(aN+b)
+           : first-child
+           : last-child
+           : nth-of-type(aN+b)
+           : first-of-type
+           : last-of-type
+           : not()
+
+pseudo-element selectors
+    elements that are in some special relation to other elements
+<selector> :: before
+<selector> :: selection
+<selector> :: after {
+    content: "html code" (inserted at end of the element's content)
+}
+
+
+div [first-of-type] [first-child]
+    div [first-child]
+    div
+div
+    p
+    span
+    p
+p
+div
+
+media queries
+  conditionally apply styles based on screen size or type. can check screen width, height, aspect ratio, orientation, color/monochrome, dpi, etc.
+  there is a "print" screen type for customizing the styles for printing a page
+  can use with @media in selector, or with media attribute on link element (external style)
+  e.g. "@media screen and (max-width: 500px)"
+
+the design should look good on any screen and device
+  "adaptive"
+    write stylesheets for several different screen sizes & types, load the right one
+      using css media queries
+  "responsive"
+    write one stylesheet which uses media queries and other CSS features to
+      let the page reformat without reloading, as the window resizes. harder to make
+
+responsive features in html - srcset for images, different sources for different screen sizes
+to prevent pre-loading the wrong image before CSS is even read
+
+css libraries -
+  zurb foundation, bootstrap
+
+bootstrap
+  css + js for reusable components to build responsive uis quickly.
+  depends on jquery and popper.js.
+  color classes: *-primary, *-secondary, *-success, etc.
+  size breakpoints: xs, sm (~phone size); md (~tablet size); lg, xl (~desktop size)
+  based on 12-column grid system
+    inside class container or container-fluid, class row
+      inside row, class col, or col-1 to col-12, defining column width out of 12,
+      can also use size breakpoints.
+      e.g. "col-12 col-md-4" means, 33% width if size md and above, else 100% width
+    classes align-items-* control vertical alignment of cols within the row, and
+    classes justify-content-* control horizontal alignment
+  some components
+    alerts - bar with feedback message for user
+      class alert.
+    buttons
+      element button, class btn.
+      many options
+    dropdowns (structure:)
+      inside class dropdown, class dropdown-toggle and class dropdown-menu
+      inside the menu, classes dropdown-item
+    forms & form controls
+      surround label and input with class form-group
+      class form-control on input
+    navs - navigation menu
+      inside class nav, classes nav-item; inside that, class nav-link
+      class active for the current one
+    navbars - fancier version of nav
+      classes navbar and navbar-expand-* for some size e.g. -sm
+      navbar-nav for the nav part
+      supports collapsing
+    modals
+      display popup messages, to be closed by user action
+      inside class modal, class modal-dialog; inside that, class modal-content
+      inside the content, modal-header/-body/-footer
+      data attributes to control the modal
+
+css preprocessors
+  css doesn't allow for DRY principle too much.
+  preprocessors let you define variables for reuse, sets of declarations
+    for reuse, and more.
+  Sass is the most common, usually using extension .scss.
+  Less is also used. similar feature set, somewhat different syntax.
+  the browser cannot understand either of them; they are compiled into css server-side.
+
+css reset
+  a style sheet that zeroes-out the browser defaults to prevent inconsistencies
+Normalize.css
+  more recent alternative
+  removes inconsistencies between browsers, but preserves some useful defaults
