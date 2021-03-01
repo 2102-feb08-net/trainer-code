@@ -174,6 +174,14 @@ SELECT @result;
 -- some code that will run instead of or after
 -- you insert, update, or delete to a particular table.
 
+-- idea from mark next time i teach this
+--   updates/inserts/deletes to a table require approval
+--   so trigger replaces them with inserts to the pending approvals table
+--   then the admin can come in and update Approved = 1, which
+--   a trigger transforms into applying the original operation
+--   to the first table.
+-- (hi associates)
+
 -- a trigger that automatically maintains the DateModified column
 -- for updates
 GO
