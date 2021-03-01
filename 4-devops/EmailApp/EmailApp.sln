@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31019.35
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EmailApp.WebUI", "EmailApp.WebUI\EmailApp.WebUI.csproj", "{94BCC4B7-D129-469F-AB7F-783900BBCDDB}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{94BCC4B7-D129-469F-AB7F-783900BBCDDB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{94BCC4B7-D129-469F-AB7F-783900BBCDDB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{94BCC4B7-D129-469F-AB7F-783900BBCDDB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{94BCC4B7-D129-469F-AB7F-783900BBCDDB}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {237B6216-6F4D-44CB-8BB3-4A9858CB6D1A}
+	EndGlobalSection
+EndGlobal
