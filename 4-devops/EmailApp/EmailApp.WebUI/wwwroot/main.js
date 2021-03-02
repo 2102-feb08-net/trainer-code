@@ -13,7 +13,7 @@ function loadInbox() {
 
 // send a request that will be handled by EmailController.GetMessage based on the
 // route configured with attributes (/api/message/[id])
-function loadMessage() {
+function loadMessage(messageId) {
   // you can pass data to the server in the URL using either the URL path itself
   // ("route parameters", as here), or the query string after the path
   // (like "?id=1")

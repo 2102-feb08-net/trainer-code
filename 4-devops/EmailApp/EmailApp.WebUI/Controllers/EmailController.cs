@@ -44,5 +44,10 @@ namespace EmailApp.WebUI.Controllers
         {
             _messageRepository.Create(message);
         }
+
+        [NonAction]
+        public void HelperMethod()
+        {
+        }
     }
 }

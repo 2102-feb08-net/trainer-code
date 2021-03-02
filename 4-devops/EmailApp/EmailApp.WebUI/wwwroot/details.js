@@ -4,7 +4,7 @@ const messageId = sessionStorage.getItem('messageId');
 const detailsList = document.getElementById('details-list');
 const errorMessage = document.getElementById('error-message');
 
-loadMessage()
+loadMessage(messageId)
   .then(message => {
     detailsList.innerHTML = `
         <dt>From</dt>
