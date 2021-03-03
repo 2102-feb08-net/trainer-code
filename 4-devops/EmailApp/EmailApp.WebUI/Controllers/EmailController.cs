@@ -18,10 +18,12 @@ namespace EmailApp.WebUI.Controllers
         // json by ASP.NET and System.Text.Json in the response body)
 
         private readonly IMessageRepository _messageRepository;
+        private readonly IInboxCleaner _inboxCleaner;
 
-        public EmailController(IMessageRepository messageRepository)
+        public EmailController(IMessageRepository messageRepository, IInboxCleaner inboxCleaner)
         {
             _messageRepository = messageRepository;
+            _inboxCleaner = inboxCleaner;
         }
 
         // distinguish what HTTP method (GET, POST, etc.) this will accept, and, what URL
@@ -67,6 +69,12 @@ namespace EmailApp.WebUI.Controllers
             };
             _messageRepository.Create(email);
             _messageRepository.Save();
+        }
+
+        [HttpPost("api/clean-inbox")]
+        public void CleanInbox()
+        {
+            _inboxCleaner.CleanInbox();
         }
 
         [NonAction]

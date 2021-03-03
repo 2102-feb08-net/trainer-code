@@ -13,5 +13,10 @@ namespace EmailApp.Business
 
         public List<Email> Previous { get; set; }
         public List<Email> Subsequent { get; set; }
+
+        public bool IsSpam()
+        {
+            return From == "kevin@kevin.com";
+        }
     }
 }

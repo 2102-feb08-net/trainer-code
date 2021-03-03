@@ -7,6 +7,7 @@ namespace EmailApp.Business
         void Create(Email email);
         Email Get(int id);
         IEnumerable<Email> List();
+        void Delete(int id);
         void Save();
     }
 }

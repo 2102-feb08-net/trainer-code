@@ -60,6 +60,13 @@ namespace EmailApp.DataAccess
             });
         }
 
+        public void Delete(int id)
+        {
+            var message = _emailContext.Messages
+                .First(m => m.Id == id);
+            _emailContext.Messages.Remove(message);
+        }
+
         public void Save()
         {
             _emailContext.SaveChanges();
