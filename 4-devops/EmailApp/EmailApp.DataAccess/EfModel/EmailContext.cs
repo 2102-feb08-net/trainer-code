@@ -72,7 +72,8 @@ namespace EmailApp.DataAccess.EfModel
             modelBuilder.Entity<Message>().HasData(initialMessages);
             modelBuilder.Entity<Account>().HasData(
                 new Account { Id = 1, Address = "fred@fred.com" },
-                new Account { Id = 2, Address = "kevin@kevin.com" });
+                new Account { Id = 2, Address = "kevin@kevin.com" },
+                new Account { Id = 3, Address = "me@me.com" });
         }
     }
 }

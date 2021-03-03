@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using EmailApp.Business;
+using EmailApp.DataAccess;
 using EmailApp.DataAccess.EfModel;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -35,6 +37,8 @@ namespace EmailApp.WebUI
             {
                 options.UseSqlServer(connectionString);
             });
+
+            services.AddScoped<IMessageRepository, MessageRepository>();
 
             services.AddControllers();
             services.AddSwaggerGen(c =>

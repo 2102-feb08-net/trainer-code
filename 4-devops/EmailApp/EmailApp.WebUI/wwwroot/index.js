@@ -2,8 +2,9 @@
 
 const inboxTable = document.getElementById('inbox-table');
 const errorMessage = document.getElementById('error-message');
+const account = undefined;
 
-loadInbox()
+loadInbox(account)
   .then(inbox => {
     for (const message of inbox) {
       // from | subject | received
