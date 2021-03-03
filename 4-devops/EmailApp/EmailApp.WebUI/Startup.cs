@@ -31,7 +31,7 @@ namespace EmailApp.WebUI
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            string connectionString = File.ReadAllText("C:/revature/emaildb-connection-string.txt");
+            string connectionString = Configuration.GetConnectionString("EmailDb");
 
             services.AddDbContext<EmailContext>(options =>
             {
