@@ -20,6 +20,25 @@ variables:
 # the steps to follow. here we have one script step, a command run in bash
 # starting from the root folder of the repository.
 steps:
+- task: UseDotNet@2
+  inputs:
+    packageType: 'sdk'
+    version: '5.0.x'
+
 - script: dotnet build --configuration $(buildConfiguration)
   displayName: dotnet build
   workingDirectory: 4-devops/EmailApp
+
+- task: DotNetCoreCLI@2
+  displayName: dotnet test
+  inputs:
+    command: 'test'
+    arguments: '--configuration $(buildConfiguration) --collect "xplat code coverage"'
+    publishTestResults: true
+    workingDirectory: '4-devops/EmailApp'
+
+- task: PublishCodeCoverageResults@1
+  displayName: publish code coverage report
+  inputs:
+    codeCoverageTool: 'Cobertura'
+    summaryFileLocation: '$(Build.SourcesDirectory)/**/coverage.cobertura.xml'
