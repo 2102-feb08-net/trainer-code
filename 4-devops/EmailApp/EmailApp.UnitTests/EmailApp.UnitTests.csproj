@@ -19,4 +19,8 @@
     </PackageReference>
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\EmailApp.Business\EmailApp.Business.csproj" />
+  </ItemGroup>
+
 </Project>
