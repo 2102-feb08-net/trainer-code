@@ -41,4 +41,4 @@ steps:
   displayName: publish code coverage report
   inputs:
     codeCoverageTool: 'Cobertura'
-    summaryFileLocation: '$(Build.SourcesDirectory)/**/coverage.cobertura.xml'
+    summaryFileLocation: '$(Agent.TempDirectory)/*/coverage.cobertura.xml'
