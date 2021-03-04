@@ -1,17 +1,25 @@
-# ASP.NET Core
-# Build and test ASP.NET Core projects targeting .NET Core.
-# Add steps that run tests, create a NuGet package, deploy, and more:
-# https://docs.microsoft.com/azure/devops/pipelines/languages/dotnet-core
+# a pipeline is a set of stuff that will run to implement continuous integration
+#    build, test, anything it can do to automatically check the quality of the code.
+#   and, maybe also package/publish it, maybe even deploy it to some server or cloud environment like Azure App Service
 
+
+# every pipeline has a set of conditions deciding when it will activate.
+# here we configure: it will run on every push to main branch specifically.
 trigger:
 - main
 
+# set requirements for the build agent that will run the stuff
+# here: ubuntu (latest version) virtual machine
 pool:
   vmImage: ubuntu-latest
 
+# set variables, referenced with $() syntax
 variables:
   buildConfiguration: 'Release'
 
+# the steps to follow. here we have one script step, a command run in bash
+# starting from the root folder of the repository.
 steps:
 - script: dotnet build --configuration $(buildConfiguration)
-  displayName: dotnet build $(buildConfiguration)
+  displayName: dotnet build
+  workingDirectory: 4-devops/EmailApp
