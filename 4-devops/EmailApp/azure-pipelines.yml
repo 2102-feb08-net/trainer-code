@@ -21,6 +21,7 @@ variables:
 # starting from the root folder of the repository.
 steps:
 - task: UseDotNet@2
+  displayName: dotnet sdk
   inputs:
     packageType: 'sdk'
     version: '5.0.x'
@@ -42,3 +43,20 @@ steps:
   inputs:
     codeCoverageTool: 'Cobertura'
     summaryFileLocation: '$(Agent.TempDirectory)/*/coverage.cobertura.xml'
+
+- task: DotNetCoreCLI@2
+  displayName: dotnet publish
+  inputs:
+    command: 'publish'
+    publishWebProjects: false
+    projects: 'EmailApp.WebUI'
+    zipAfterPublish: true
+    workingDirectory: '4-devops/EmailApp'
+
+- task: AzureRmWebAppDeployment@4
+  inputs:
+    ConnectionType: 'AzureRM'
+    azureSubscription: 'Training(0c61e2ed-4a6a-437f-9a03-1f223527220b)'
+    appType: 'webApp'
+    WebAppName: '2102-escalona-email'
+    packageForLinux: '$(System.DefaultWorkingDirectory)/**/*.zip'
