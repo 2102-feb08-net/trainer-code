@@ -19,11 +19,13 @@ namespace EmailApp.WebUI.Controllers
 
         private readonly IMessageRepository _messageRepository;
         private readonly IInboxCleaner _inboxCleaner;
+        private readonly ITimeProvider _timeProvider;
 
-        public EmailController(IMessageRepository messageRepository, IInboxCleaner inboxCleaner)
+        public EmailController(IMessageRepository messageRepository, IInboxCleaner inboxCleaner, ITimeProvider timeProvider)
         {
             _messageRepository = messageRepository;
             _inboxCleaner = inboxCleaner;
+            _timeProvider = timeProvider;
         }
 
         // distinguish what HTTP method (GET, POST, etc.) this will accept, and, what URL

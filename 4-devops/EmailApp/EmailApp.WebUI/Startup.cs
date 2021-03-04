@@ -40,6 +40,7 @@ namespace EmailApp.WebUI
 
             services.AddScoped<IMessageRepository, MessageRepository>();
             services.AddScoped<IInboxCleaner, InboxCleaner>();
+            services.AddSingleton<ITimeProvider, TimeProvider>();
 
             services.AddControllers();
             services.AddSwaggerGen(c =>
