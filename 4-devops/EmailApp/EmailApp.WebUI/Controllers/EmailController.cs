@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 using EmailApp.Business;
@@ -60,8 +61,10 @@ namespace EmailApp.WebUI.Controllers
         // will deserialize data in the request body (JSON text)
         // into the action method parameters.
         [HttpPost("api/send-message")]
-        public void SendMessage(Message message)
+        public void SendMessage(Message message, string option)
         {
+            // could do custom server-side validation right here
+
             var email = new Email
             {
                 Body = message.Body,

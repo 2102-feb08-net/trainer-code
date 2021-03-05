@@ -60,6 +60,8 @@ namespace EmailApp.WebUI
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "EmailApp.WebUI v1"));
             }
 
+            app.UseStatusCodePages();
+
             app.UseHttpsRedirection();
 
             app.UseRewriter(new RewriteOptions()
