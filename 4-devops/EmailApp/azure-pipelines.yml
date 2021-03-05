@@ -39,10 +39,18 @@ steps:
     scannerMode: 'MSBuild'
     projectKey: '2102-feb08-net_trainer-code'
     projectName: 'EmailApp'
+    extraProperties: 'sonar.cs.opencover.reportsPaths=$(Agent.TempDirectory)/*/coverage.opencover.xml'
 
 - script: dotnet build --configuration $(buildConfiguration)
   displayName: dotnet build
   workingDirectory: 4-devops/EmailApp
+
+- task: DotNetCoreCLI@2
+  displayName: dotnet test
+  inputs:
+    command: 'test'
+    arguments: '--configuration $(buildConfiguration) --collect "xplat code coverage" -- DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Format=cobertura,opencover'
+    workingDirectory: '4-devops/EmailApp'
 
 - task: SonarCloudAnalyze@1
   displayName: sonar run analysis
@@ -51,14 +59,6 @@ steps:
   displayName: publish sonar quality gate
   inputs:
     pollingTimeoutSec: '300'
-
-- task: DotNetCoreCLI@2
-  displayName: dotnet test
-  inputs:
-    command: 'test'
-    arguments: '--configuration $(buildConfiguration) --collect "xplat code coverage"'
-    publishTestResults: true
-    workingDirectory: '4-devops/EmailApp'
 
 - task: PublishCodeCoverageResults@1
   displayName: publish code coverage report
