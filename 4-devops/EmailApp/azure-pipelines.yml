@@ -26,6 +26,11 @@ steps:
     packageType: 'sdk'
     version: '5.0.x'
 
+- task: UseDotNet@2
+  inputs:
+    packageType: 'runtime'
+    version: '2.x'
+
 - task: SonarCloudPrepare@1
   displayName: sonar prepare analysis
   inputs:
