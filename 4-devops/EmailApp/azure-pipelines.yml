@@ -49,9 +49,8 @@ steps:
   inputs:
     command: 'publish'
     publishWebProjects: false
-    projects: 'EmailApp.WebUI'
+    projects: '4-devops/EmailApp/EmailApp.WebUI'
     zipAfterPublish: true
-    workingDirectory: '4-devops/EmailApp'
 
 - task: AzureRmWebAppDeployment@4
   inputs:
