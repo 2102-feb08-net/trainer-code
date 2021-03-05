@@ -12,8 +12,5 @@ namespace EmailApp.WebUI.Models
         public DateTimeOffset Date { get; set; }
         public string Subject { get; set; }
         public string Body { get; set; }
-
-        public List<Message> Previous { get; set; }
-        public List<Message> Subsequent { get; set; }
     }
 }
