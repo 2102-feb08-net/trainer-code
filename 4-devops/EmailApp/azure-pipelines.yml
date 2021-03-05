@@ -26,9 +26,26 @@ steps:
     packageType: 'sdk'
     version: '5.0.x'
 
+- task: SonarCloudPrepare@1
+  displayName: sonar prepare analysis
+  inputs:
+    SonarCloud: 'sonarcloud-escalonn'
+    organization: '2102-feb08-net'
+    scannerMode: 'MSBuild'
+    projectKey: '2102-feb08-net_trainer-code'
+    projectName: 'EmailApp'
+
 - script: dotnet build --configuration $(buildConfiguration)
   displayName: dotnet build
   workingDirectory: 4-devops/EmailApp
+
+- task: SonarCloudAnalyze@1
+  displayName: sonar run analysis
+
+- task: SonarCloudPublish@1
+  displayName: publish sonar quality gate
+  inputs:
+    pollingTimeoutSec: '300'
 
 - task: DotNetCoreCLI@2
   displayName: dotnet test
@@ -53,6 +70,7 @@ steps:
     zipAfterPublish: true
 
 - task: AzureRmWebAppDeployment@4
+  displayName: app service deploy
   inputs:
     ConnectionType: 'AzureRM'
     azureSubscription: 'Training(0c61e2ed-4a6a-437f-9a03-1f223527220b)'
