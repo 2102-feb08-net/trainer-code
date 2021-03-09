@@ -9,7 +9,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EmailApp.DataAccess", "Emai
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EmailApp.Business", "EmailApp.Business\EmailApp.Business.csproj", "{67F4BC7F-B36F-4ABF-B24C-954A15F72C78}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EmailApp.UnitTests", "EmailApp.UnitTests\EmailApp.UnitTests.csproj", "{131FBDD5-C2E7-4DA5-9238-FA90B29ABB30}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EmailApp.UnitTests", "EmailApp.UnitTests\EmailApp.UnitTests.csproj", "{131FBDD5-C2E7-4DA5-9238-FA90B29ABB30}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EmailApp.IntegrationTests", "EmailApp.IntegrationTests\EmailApp.IntegrationTests.csproj", "{04F32C76-36EC-446D-98AD-B0818A60497F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{131FBDD5-C2E7-4DA5-9238-FA90B29ABB30}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{131FBDD5-C2E7-4DA5-9238-FA90B29ABB30}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{131FBDD5-C2E7-4DA5-9238-FA90B29ABB30}.Release|Any CPU.Build.0 = Release|Any CPU
+		{04F32C76-36EC-446D-98AD-B0818A60497F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{04F32C76-36EC-446D-98AD-B0818A60497F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{04F32C76-36EC-446D-98AD-B0818A60497F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{04F32C76-36EC-446D-98AD-B0818A60497F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
