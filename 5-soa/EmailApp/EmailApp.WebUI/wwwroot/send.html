@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Email - Send</title>
+</head>
+
+<body>
+    <header>
+        <nav>
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="send.html">New Email</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <h1>New Email</h1>
+
+        <form id="message-form">
+          <label>
+            Subject
+            <!--<input type="text" name="subject" required maxlength="25" autocomplete="off">-->
+            <input type="text" name="subject" autocomplete="off">
+          </label>
+            <input type="submit" value="Send">
+        </form>
+
+        <div id="success-message" hidden></div>
+        <div id="error-message" hidden></div>
+    </main>
+
+    <script src="main.js"></script>
+    <script src="send.js"></script>
+</body>
+
+</html>
