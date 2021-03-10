@@ -15,7 +15,7 @@ namespace WcfService
     {
         public string GetData(int value)
         {
-            throw new ArgumentException("value is wrong");
+            //throw new ArgumentException("value is wrong");
             return string.Format("You entered: {0}", value);
         }
 
