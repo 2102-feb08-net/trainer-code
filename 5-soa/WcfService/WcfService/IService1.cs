@@ -8,6 +8,20 @@ using System.Text;
 
 namespace WcfService
 {
+    // important WCF attributes
+    // System.ServiceModel.ServiceContract
+    //    means that interface defines a set of operations that external code can communicate with using SOAP.
+    // System.ServiceModel.OperationContract
+    //    means that this method inside the ServiceContract is an operation that is externally accessible
+    // System.Runtime.Serialization.DataContract
+    //    configure serialization for that type to be serialized/deserialized by DataContractSerializer
+    //    (so it can be a parameter or return type of an operation method)
+    // System.Runtime.Serialization.DataMember
+    //    DataContractSerializer is opt-in for each member that will be serialized (unlike, e.g., System.Text.Json
+    //     or Newtonsoft.Json in ASP.NET, with is opt-out with JsonIgnore)
+    // FaultContract
+    //   control serialization of server-side errors into SOAP faults.
+
     // NOTE: You can use the "Rename" command on the "Refactor" menu to change the interface name "IService1" in both code and config file together.
     [ServiceContract]
     public interface IService1
@@ -17,6 +31,7 @@ namespace WcfService
         string GetData(int value);
 
         [OperationContract]
+        //[FaultContract()]
         CompositeType GetDataUsingDataContract(CompositeType composite);
 
         // TODO: Add your service operations here
