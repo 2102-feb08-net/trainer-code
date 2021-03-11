@@ -120,7 +120,7 @@ status codes
             RedirectToAction(...), RedirectToRoute(...)
         304 not modified: you had e.g. "if-modified-since" header, and the resource hasn't been modified
     400 client error
-*       400 bad request. syntax of request is invalid.
+*       400 bad request. generic code for any error that's the client's fault. (e.g. syntax of request is invalid)
             BadRequest()
 *       401 unauthorized: really means unauthenticated. you did not identify yourself.
             Unauthorized()
