@@ -5,8 +5,14 @@
 
 # every pipeline has a set of conditions deciding when it will activate.
 # here we configure: it will run on every push to main branch specifically.
+# but only if this solution's folder was modified in the push.
 trigger:
-- main
+  branches:
+    include:
+    - main
+  paths:
+    include:
+    - 4-devops/EmailApp
 
 # set requirements for the build agent that will run the stuff
 # here: ubuntu (latest version) virtual machine
