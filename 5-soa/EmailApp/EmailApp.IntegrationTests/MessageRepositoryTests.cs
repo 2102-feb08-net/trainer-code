@@ -13,7 +13,7 @@ namespace EmailApp.IntegrationTests
     public class MessageRepositoryTests
     {
         [Fact]
-        public void Get_GetsExistingEmail()
+        public async Task Get_GetsExistingEmail()
         {
             // arrange
             using var contextFactory = new TestEmailContextFactory();
@@ -31,7 +31,7 @@ namespace EmailApp.IntegrationTests
             var repo = new MessageRepository(context);
 
             // act
-            Business.Email email = repo.Get(insertedEmail.Id);
+            Business.Email email = await repo.GetAsync(insertedEmail.Id);
 
             // assert
             Assert.Equal(insertedEmail.Id, email.Id);
@@ -97,7 +97,7 @@ namespace EmailApp.IntegrationTests
                 // a email is ready to be saved, but not saved yet
 
                 // act
-                repo.Save();
+                repo.SaveAsync();
             }
 
             // assert

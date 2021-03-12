@@ -31,9 +31,10 @@ namespace EmailApp.WebUI.Controllers
 
         // distinguish what HTTP method (GET, POST, etc.) this will accept, and, what URL
         [HttpGet("api/inbox")]
-        public IEnumerable<Message> GetInbox()
+        public async Task<IEnumerable<Message>> GetInboxAsync()
         {
-            return _messageRepository.List().Select(e => new Message
+            var messages = await _messageRepository.ListAsync();
+            return messages.Select(e => new Message
             {
                 Body = e.Body,
                 Date = e.Sent,
@@ -43,10 +44,10 @@ namespace EmailApp.WebUI.Controllers
             });
         }
 
-        [HttpGet("api/message/{id}")]
-        public Message GetMessage(int id)
+        [HttpGet("api/messages/{id}")]
+        public async Task<Message> GetMessageAsync(int id)
         {
-            var email = _messageRepository.Get(id);
+            var email = await _messageRepository.GetAsync(id);
             return new Message
             {
                 Body = email.Body,
@@ -60,8 +61,8 @@ namespace EmailApp.WebUI.Controllers
         // "model binding" (useful feature of ASP.NET)
         // will deserialize data in the request body (JSON text)
         // into the action method parameters.
-        [HttpPost("api/send-message")]
-        public void SendMessage(Message message, string option)
+        [HttpPost("api/outbox")]
+        public async Task SendMessageAsync(Message message, string option)
         {
             // could do custom server-side validation right here
 
@@ -73,13 +74,13 @@ namespace EmailApp.WebUI.Controllers
                 Subject = message.Subject
             };
             _messageRepository.Create(email);
-            _messageRepository.Save();
+            await _messageRepository.SaveAsync();
         }
 
         [HttpPost("api/clean-inbox")]
-        public void CleanInbox()
+        public async Task CleanInboxAsync()
         {
-            _inboxCleaner.CleanInbox();
+            await _inboxCleaner.CleanInboxAsync();
         }
 
         [NonAction]

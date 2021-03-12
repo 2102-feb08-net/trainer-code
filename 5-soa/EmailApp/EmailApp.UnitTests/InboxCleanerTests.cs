@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using EmailApp.Business;
 using Moq;
 using Xunit;
@@ -16,7 +17,7 @@ namespace EmailApp.UnitTests
         }
 
         [Fact]
-        public void CleanInbox_CleansOneSpam_WithMoq()
+        public async Task CleanInbox_CleansOneSpam_WithMoq()
         {
             // arrange
             var emails = new[]
@@ -26,19 +27,19 @@ namespace EmailApp.UnitTests
             };
 
             var mockRepo = new Mock<IMessageRepository>();
-            mockRepo.Setup(r => r.List()).Returns(emails).Verifiable();
+            mockRepo.Setup(r => r.ListAsync()).ReturnsAsync(emails).Verifiable();
             mockRepo.Setup(r => r.Delete(It.IsAny<int>())).Verifiable();
-            mockRepo.Setup(r => r.Save()).Verifiable();
+            mockRepo.Setup(r => r.SaveAsync()).Verifiable();
 
             var cleaner = new InboxCleaner(mockRepo.Object);
 
             // act
-            cleaner.CleanInbox();
+            await cleaner.CleanInboxAsync();
 
             // assert
-            mockRepo.Verify(r => r.List());
+            mockRepo.Verify(r => r.ListAsync());
             mockRepo.Verify(r => r.Delete(emails[0].Id), Times.Once);
-            mockRepo.Verify(r => r.Save());
+            mockRepo.Verify(r => r.SaveAsync()); // would be nice to verify it was awaited
             mockRepo.VerifyNoOtherCalls();
         }
 
@@ -55,7 +56,7 @@ namespace EmailApp.UnitTests
             var cleaner = new InboxCleaner(repo);
 
             // act
-            cleaner.CleanInbox();
+            cleaner.CleanInboxAsync();
 
             // assert
             Assert.Equal(emails[0].Id, repo.DeletedIds.Single());
@@ -77,9 +78,9 @@ namespace EmailApp.UnitTests
                 _emails = emails;
             }
 
-            public IEnumerable<Email> List()
+            public Task<IEnumerable<Email>> ListAsync()
             {
-                return _emails;
+                return Task.FromResult(_emails);
             }
 
             public void Delete(int id)
@@ -87,13 +88,14 @@ namespace EmailApp.UnitTests
                 DeletedIds.Add(id);
             }
 
-            public void Save()
+            public Task SaveAsync()
             {
                 Saved = true;
+                return Task.CompletedTask;
             }
 
             public void Create(Email email) => throw new NotImplementedException();
-            public Email Get(int id) => throw new NotImplementedException();
+            public Task<Email> GetAsync(int id) => throw new NotImplementedException();
         }
     }
 }

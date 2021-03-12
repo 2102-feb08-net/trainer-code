@@ -15,16 +15,17 @@ namespace EmailApp.Business
             _messageRepository = messageRepository;
         }
 
-        public void CleanInbox()
+        public async Task CleanInboxAsync()
         {
-            IEnumerable<Email> spam = _messageRepository.List()
+            var messages = await _messageRepository.ListAsync();
+            IEnumerable<Email> spam = messages
                 .Where(e => e.IsSpam());
 
             foreach (int id in spam.Select(e => e.Id))
             {
                 _messageRepository.Delete(id);
             }
-            _messageRepository.Save();
+            await _messageRepository.SaveAsync();
         }
     }
 }

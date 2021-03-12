@@ -18,7 +18,7 @@ function loadMessage(messageId) {
   // you can pass data to the server in the URL using either the URL path itself
   // ("route parameters", as here), or the query string after the path
   // (like "?id=1")
-  return fetch(`/api/message/${messageId}`).then(response => {
+  return fetch(`/api/messages/${messageId}`).then(response => {
     if (!response.ok) {
       throw new Error(`Network response was not ok (${response.status})`);
     }
@@ -28,7 +28,7 @@ function loadMessage(messageId) {
 
 // send a request that contains data besides the URL (JSON in the body)
 function sendMessage(message) {
-  return fetch('/api/send-message', {
+  return fetch('/api/outbox', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'

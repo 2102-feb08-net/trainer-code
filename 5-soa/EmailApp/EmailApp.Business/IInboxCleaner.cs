@@ -1,7 +1,9 @@
-﻿namespace EmailApp.Business
+﻿using System.Threading.Tasks;
+
+namespace EmailApp.Business
 {
     public interface IInboxCleaner
     {
-        void CleanInbox();
+        Task CleanInboxAsync();
     }
 }

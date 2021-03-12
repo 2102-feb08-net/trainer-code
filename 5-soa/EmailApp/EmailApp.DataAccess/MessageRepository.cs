@@ -18,9 +18,9 @@ namespace EmailApp.DataAccess
             _emailContext = emailContext;
         }
 
-        public IEnumerable<Email> List()
+        public async Task<IEnumerable<Email>> ListAsync()
         {
-            return _emailContext.Messages
+            return await _emailContext.Messages
                 .Include(m => m.From)
                 .Select(m => new Email
                 {
@@ -29,14 +29,14 @@ namespace EmailApp.DataAccess
                     From = m.From.Address,
                     Sent = m.Date,
                     Subject = m.Subject
-                });
+                }).ToListAsync();
         }
 
-        public Email Get(int id)
+        public async Task<Email> GetAsync(int id)
         {
-            var message = _emailContext.Messages
+            var message = await _emailContext.Messages
                 .Include(m => m.From)
-                .First(m => m.Id == id);
+                .FirstAsync(m => m.Id == id);
             return new Email
             {
                 Id = message.Id,
@@ -67,9 +67,9 @@ namespace EmailApp.DataAccess
             _emailContext.Messages.Remove(message);
         }
 
-        public void Save()
+        public async Task SaveAsync()
         {
-            _emailContext.SaveChanges();
+            await _emailContext.SaveChangesAsync();
         }
     }
 }
