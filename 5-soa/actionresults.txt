@@ -1,0 +1,50 @@
+ContentResult
+JsonResult
+EmptyResult
+FileResult
+RedirectResult
+RedirectToActionResult
+RedirectToRouteResult
+ForbidResult
+StatusCodeResult
+    BadRequestResult
+    ConflictResult
+    NoContentResult
+    NotFoundResult
+    OkResult
+    UnauthorizedResult
+    UnprocessableEntityResult
+    UnsupportedMediaTypeResult
+ObjectResult
+    AcceptedAtActionResult
+    AcceptedAtRouteResult
+    AcceptedResult
+    BadRequestObjectResult
+    ConflictObjectResult
+    CreatedAtActionResult
+    CreatedAtRouteResult
+    CreatedResult
+    NotFoundObjectResult
+    OkObjectResult
+    UnauthorizedObjectResult
+    UnprocessableEntityObjectResult
+
+
+view stuff
+ViewComponentResult
+ViewFeatures.IKeepTempDataResult
+ViewResult
+PartialViewResult
+SignInResult
+SignOutResult
+RedirectToPageResult
+Core.Infrastructure.IAntiforgeryValidationFailedResult
+AntiforgeryValidationFailedResult
+RazorPages.PageResult
+
+
+stuff i don't often see
+Infrastructure.IClientErrorActionResult
+ChallengeResult
+LocalRedirectResult
+Infrastructure.IStatusCodeActionResult
