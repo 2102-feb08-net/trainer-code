@@ -3,10 +3,15 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Net.Mime;
+using System.Reflection;
 using System.Text.Json;
 using System.Threading.Tasks;
+using AspNetCoreFundamentals.Filters;
+using AspNetCoreFundamentals.Validation;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 
 namespace AspNetCoreFundamentals.Controllers
 {
@@ -14,6 +19,29 @@ namespace AspNetCoreFundamentals.Controllers
     [ApiController]
     public class DataController : ControllerBase
     {
+        private readonly ILogger<DataController> _logger;
+
+        public DataController(ILogger<DataController> logger)
+        {
+            logger.LogDebug(MethodBase.GetCurrentMethod().Name);
+            _logger = logger;
+        }
+
+        [TypeFilter(typeof(TestingResourceFilter))]
+        [TypeFilter(typeof(TestingExceptionFilter))]
+        [TypeFilter(typeof(TestingActionFilter))]
+        [TypeFilter(typeof(TestingResultFilter))]
+        [HttpPost("filtertest")]
+        public IActionResult FilterTest([TestingValidation] DataObject data)
+        {
+            _logger.LogDebug(MethodBase.GetCurrentMethod().Name);
+            if (data.Id != 0)
+            {
+                throw new Exception("error");
+            }
+            return new EmptyResult();
+        }
+
         //[HttpGet("1")] // GET data/1
         [HttpGet] // GET data
         public string GetData()
@@ -92,11 +120,19 @@ namespace AspNetCoreFundamentals.Controllers
         }
     }
 
-    public class DataObject
+    public class DataObject : IValidatableObject
     {
         public int Id { get; set; }
 
         [MaxLength(30)]
         public string Data { get; set; }
+
+        public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
+        {
+            var logger = (ILogger<DataObject>)validationContext.GetService(typeof(ILogger<DataObject>));
+            logger.LogDebug(MethodBase.GetCurrentMethod().Name);
+
+            return Enumerable.Empty<ValidationResult>();
+        }
     }
 }
