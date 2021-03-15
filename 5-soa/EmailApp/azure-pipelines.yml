@@ -1,85 +1,110 @@
-# a pipeline is a set of stuff that will run to implement continuous integration
-#    build, test, anything it can do to automatically check the quality of the code.
-#   and, maybe also package/publish it, maybe even deploy it to some server or cloud environment like Azure App Service
-
-
-# every pipeline has a set of conditions deciding when it will activate.
-# here we configure: it will run on every push to main branch specifically.
 trigger:
+  branches:
+    include:
+    - main
+  paths:
+    include:
+    - 5-soa/EmailApp
+
+pr:
 - main
 
-# set requirements for the build agent that will run the stuff
-# here: ubuntu (latest version) virtual machine
 pool:
   vmImage: ubuntu-latest
 
-# set variables, referenced with $() syntax
-variables:
-  buildConfiguration: 'Release'
+stages:
+- stage: build
 
-# the steps to follow. here we have one script step, a command run in bash
-# starting from the root folder of the repository.
-steps:
-- task: UseDotNet@2
-  displayName: dotnet sdk
-  inputs:
-    packageType: 'sdk'
-    version: '5.0.x'
+  variables:
+    buildConfiguration: Release
+    appDirectory: 5-soa/EmailApp
 
-- task: UseDotNet@2
-  inputs:
-    packageType: 'runtime'
-    version: '2.x'
+  jobs:
+  - job: build
 
-- task: SonarCloudPrepare@1
-  displayName: sonar prepare analysis
-  inputs:
-    SonarCloud: 'sonarcloud-escalonn'
-    organization: '2102-feb08-net'
-    scannerMode: 'MSBuild'
-    projectKey: '2102-feb08-net_trainer-code'
-    projectName: 'EmailApp'
-    extraProperties: 'sonar.cs.opencover.reportsPaths=$(Agent.TempDirectory)/*/coverage.opencover.xml'
+    steps:
+    - task: UseDotNet@2
+      displayName: use dotnet sdk 5
+      inputs:
+        packageType: 'sdk'
+        version: '5.0.x'
+    
+    - script: dotnet publish --configuration $(buildConfiguration) --output $(System.ArtifactStagingDirectory)/app
+      displayName: dotnet publish
+      workingDirectory: $(appDirectory)
+    
+    - publish: $(System.ArtifactStagingDirectory)/app
+      artifact: app
+      displayName: publish assemblies
 
-- script: dotnet build --configuration $(buildConfiguration)
-  displayName: dotnet build
-  workingDirectory: 4-devops/EmailApp
+  - job: analyze
 
-- task: DotNetCoreCLI@2
-  displayName: dotnet test
-  inputs:
-    command: 'test'
-    arguments: '--configuration $(buildConfiguration) --collect "xplat code coverage" -- DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Format=cobertura,opencover'
-    workingDirectory: '4-devops/EmailApp'
+    steps:
+    - task: UseDotNet@2
+      displayName: use dotnet sdk 5
+      inputs:
+        packageType: 'sdk'
+        version: '5.0.x'
 
-- task: SonarCloudAnalyze@1
-  displayName: sonar run analysis
+    - task: UseDotNet@2
+      displayName: add dotnet runtime 2
+      inputs:
+        packageType: 'runtime'
+        version: '2.x'
 
-- task: SonarCloudPublish@1
-  displayName: publish sonar quality gate
-  inputs:
-    pollingTimeoutSec: '300'
+    - task: SonarCloudPrepare@1
+      displayName: sonar prepare analysis
+      inputs:
+        SonarCloud: 'sonarcloud-escalonn'
+        organization: '2102-feb08-net'
+        scannerMode: 'MSBuild'
+        projectKey: '2102-feb08-net_trainer-code'
+        projectName: 'EmailApp'
+        extraProperties: 'sonar.cs.opencover.reportsPaths=$(Agent.TempDirectory)/*/coverage.opencover.xml'
 
-- task: PublishCodeCoverageResults@1
-  displayName: publish code coverage report
-  inputs:
-    codeCoverageTool: 'Cobertura'
-    summaryFileLocation: '$(Agent.TempDirectory)/*/coverage.cobertura.xml'
+    - script: dotnet build --configuration $(buildConfiguration)
+      displayName: dotnet build
+      workingDirectory: $(appDirectory)
 
-- task: DotNetCoreCLI@2
-  displayName: dotnet publish
-  inputs:
-    command: 'publish'
-    publishWebProjects: false
-    projects: '4-devops/EmailApp/EmailApp.WebUI'
-    zipAfterPublish: true
+    - task: DotNetCoreCLI@2
+      displayName: dotnet test
+      inputs:
+        command: 'test'
+        arguments: '--configuration $(buildConfiguration) --collect "xplat code coverage" -- DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Format=cobertura,opencover'
+        workingDirectory: '$(appDirectory)'
 
-- task: AzureRmWebAppDeployment@4
+    - task: SonarCloudAnalyze@1
+      displayName: sonar run analysis
+
+    - task: SonarCloudPublish@1
+      displayName: publish sonar quality gate
+      inputs:
+        pollingTimeoutSec: '300'
+
+    - task: PublishCodeCoverageResults@1
+      displayName: publish code coverage report
+      inputs:
+        codeCoverageTool: 'Cobertura'
+        summaryFileLocation: '$(Agent.TempDirectory)/*/coverage.cobertura.xml'
+
+- stage: deploy
   condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
-  displayName: app service deploy
-  inputs:
-    ConnectionType: 'AzureRM'
-    azureSubscription: 'Training(0c61e2ed-4a6a-437f-9a03-1f223527220b)'
-    appType: 'webApp'
-    WebAppName: '2102-escalona-email'
-    packageForLinux: '$(System.DefaultWorkingDirectory)/**/*.zip'
+
+  jobs:
+  - deployment: app_service
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - download: current
+            artifact: app
+            displayName: download app assemblies
+          
+          - task: AzureRmWebAppDeployment@4
+            displayName: app service deploy
+            inputs:
+              ConnectionType: 'AzureRM'
+              azureSubscription: 'Training(0c61e2ed-4a6a-437f-9a03-1f223527220b)'
+              appType: 'webApp'
+              WebAppName: '2102-escalona-email'
+              packageForLinux: '$(Pipeline.Workspace)/app'
