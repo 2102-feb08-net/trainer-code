@@ -92,6 +92,7 @@ stages:
 
   jobs:
   - deployment: app_service
+    environment: production
     strategy:
       runOnce:
         deploy:
