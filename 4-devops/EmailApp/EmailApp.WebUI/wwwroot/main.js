@@ -2,14 +2,40 @@
 
 // send a request that will be handled by EmailController.GetInbox based on the
 // route configured with attributes (/api/inbox)
-function loadInbox(account) {
-  const url = account !== undefined ? `/api/inbox?account=${account}` : '/api/inbox';
-  return fetch(url).then(response => {
-    if (!response.ok) {
-      throw new Error(`Network response was not ok (${response.status})`);
+function loadInbox(account, onSuccess, onError) {
+  // const url = account !== undefined ? `/api/inbox?account=${account}` : '/api/inbox';
+  // return fetch(url).then(response => {
+  //   if (!response.ok) {
+  //     throw new Error(`Network response was not ok (${response.status})`);
+  //   }
+  //   return response.json();
+  // });
+
+  const xhr = new XMLHttpRequest();
+  // xhr has events, the most relevant one
+  // is readystatechange, which fires every time its readyState property changed.
+  // readystate goes from 0 to 4 as we build the request, send it, and receive the response.
+
+  // debugger;
+  xhr.onreadystatechange = function () {
+    console.log(xhr.readyState);
+    if (xhr.readyState === 4) {
+      if (xhr.status < 200 || xhr.status >= 300) {
+        onError(xhr.status);
+      } else {
+        // const body = xhr.responseText;
+        // onSuccess(JSON.parse(body));
+        // because i set responseType to json, response will have the
+        // result of JSON.parse
+        onSuccess(xhr.response);
+      }
     }
-    return response.json();
-  });
+  };
+
+  xhr.open('GET', '/api/inbox');
+  xhr.responseType = "json"; // change what xhr.response will try to be
+  xhr.setRequestHeader("Accept", "application/json");
+  xhr.send();
 }
 
 // send a request that will be handled by EmailController.GetMessage based on the
