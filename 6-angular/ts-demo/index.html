@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <script src="index.js"></script>
+</head>
+
+<body>
+
+  <form>
+    <label for="request">Request:</label>
+    <textarea id="request" name="request" rows="10" cols="33">{
+  "method": "GET",
+  "httpVersion": "1.1",
+  "url": "/user-data",
+  "headers": {
+    "Accept": "application/json"
+  }
+}</textarea>
+  </form>
+
+  <button onclick="updateDisplay()">Update</button>
+
+  <div id="request-display">
+    <pre>
+      <code></code>
+    </pre>
+  </div>
+
+  <button onclick="showARequest()">Show a default request</button>
+
+</body>
+
+</html>
