@@ -6,7 +6,6 @@ function updateDisplay(request) {
     var input = document.querySelector('#request');
     request = JSON.parse(input.value);
   }
-  debugger;
 
   var result = '';
 
