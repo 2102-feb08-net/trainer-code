@@ -1,0 +1,16 @@
+{
+  "name": "node-package",
+  "version": "1.0.0",
+  "description": "demo node package",
+  "scripts": {
+    "start": "http-server . -o index.html",
+    "asdf": "echo asdf",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Nick Escalona",
+  "license": "ISC",
+  "private": true,
+  "dependencies": {
+    "http-server": "^0.12.3"
+  }
+}
