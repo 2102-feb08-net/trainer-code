@@ -1,4 +1,7 @@
-function updateDisplay(request: HttpRequest | undefined) {
+function updateDisplay(request?: HttpRequest, formatter?: RequestFormatter) {
+  if (!formatter) {
+    formatter = new DefaultRequestFormatter();
+  }
   const display = document.querySelector('#request-display code');
   if (!display) {
     throw new Error('page in invalid state');
@@ -13,17 +16,7 @@ function updateDisplay(request: HttpRequest | undefined) {
     request = JSON.parse(input.value) as HttpRequest;
   }
 
-  let result = '';
-
-  result += `${request.method} ${request.url} HTTP/${request.httpVersion}\n`;
-  for (const headerName in request.headers) {
-    result += `${headerName}: ${request.headers[headerName]}\n`;
-  }
-  result += '\n';
-
-  if (request.method !== "GET") {
-    result += request.body;
-  }
+  const result = formatter.format(request);
 
   display.textContent = result;
 }
@@ -41,41 +34,25 @@ function showARequest() {
   updateDisplay(request as GetRequest);
 }
 
-type HttpMethod =
-  | "GET"
-  | "POST";
-
-type HttpRequest = GetRequest | PostRequest;
-
-interface HttpRequestBase {
-  method: HttpMethod;
-  httpVersion: string;
-  url: string;
-  headers: { [headerName: string]: string };
-}
-
-interface GetRequest extends HttpRequestBase {
-  method: "GET";
-}
-
-interface PostRequest extends HttpRequestBase {
-  method: "POST";
-  body: string;
-}
-
 class ObjWithLength {
   length: number = 5;
 }
 
-function tsStuff(parameter: number | string) {
-  let variable: number | string | ObjWithLength = 5;
+abstract class HelperMethods {
+  abstract nonstatic(): void;
 
-  variable = 3;
-  variable = "asdf";
-  variable = { length: 1 };
-  // variable = true;
-  // if (typeof parameter === "number") {
-  if (typeof parameter !== "number") {
-    const length = parameter.length;
+  static tsStuff(parameter: number | string) {
+    let variable: number | string | ObjWithLength = 5;
+
+    variable = 3;
+    variable = "asdf";
+    variable = { length: 1 };
+    // variable = true;
+    // if (typeof parameter === "number") {
+    if (typeof parameter !== "number") {
+      const length = parameter.length;
+    }
   }
 }
+
+HelperMethods.tsStuff("asdf");
