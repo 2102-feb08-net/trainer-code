@@ -6,7 +6,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Document</title>
-  <script src="out/index.js"></script>
+  <script src="dist/main.js" async defer></script>
 </head>
 
 <body>
@@ -23,7 +23,7 @@
 }</textarea>
   </form>
 
-  <button onclick="updateDisplay()">Update</button>
+  <button id="update-display-button">Update</button>
 
   <div id="request-display">
     <pre>
@@ -31,7 +31,7 @@
     </pre>
   </div>
 
-  <button onclick="showARequest()">Show a default request</button>
+  <button id="show-request-button">Show a default request</button>
 
 </body>
 

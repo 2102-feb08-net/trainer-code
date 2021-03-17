@@ -1,19 +1,19 @@
-type HttpMethod = 'GET' | 'POST';
+export type HttpMethod = 'GET' | 'POST';
 
-type HttpRequest = GetRequest | PostRequest;
+export type HttpRequest = GetRequest | PostRequest;
 
-interface HttpRequestBase {
+export interface HttpRequestBase {
   method: HttpMethod;
   httpVersion: string;
   url: string;
   headers: { [headerName: string]: string };
 }
 
-interface GetRequest extends HttpRequestBase {
+export interface GetRequest extends HttpRequestBase {
   method: 'GET';
 }
 
-interface PostRequest extends HttpRequestBase {
+export interface PostRequest extends HttpRequestBase {
   method: 'POST';
   body: string;
 }

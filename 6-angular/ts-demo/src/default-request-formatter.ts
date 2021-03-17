@@ -1,4 +1,7 @@
-class DefaultRequestFormatter implements RequestFormatter {
+import { HttpRequest } from "./httprequest";
+import RequestFormatter from "./request-formatter";
+
+export class DefaultRequestFormatter implements RequestFormatter {
   format(request: HttpRequest): string {
     let result = '';
 

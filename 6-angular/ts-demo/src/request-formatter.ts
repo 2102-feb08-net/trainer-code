@@ -1,3 +1,5 @@
-interface RequestFormatter {
-  format(request: HttpRequest): string
+import { HttpRequest } from "./httprequest";
+
+export default interface RequestFormatter {
+  format(request: HttpRequest): string;
 }
