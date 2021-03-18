@@ -1,0 +1,27 @@
+<h1>My Inbox</h1>
+
+<table *ngIf="messages">
+  <thead>
+    <tr>
+      <th scope="col">From</th>
+      <th scope="col">Subject</th>
+      <th scope="col">Received</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let message of messages">
+      <td>{{message.from}}</td>
+      <td>{{message.subject}}</td>
+      <td>{{message.date}}</td> <!-- interpolation outside attributes -->
+      <!-- <img src="{{getUrl()}}"> interpolation with attributes  -->
+      <!-- <img [src]="getUrl()"> property binding -->
+    </tr>
+  </tbody>
+</table>
+<div *ngIf="!messages">
+  (loading)
+</div>
+
+<div *ngIf="error">
+  {{ error }}
+</div>

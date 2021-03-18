@@ -43,6 +43,12 @@ namespace EmailApp.WebUI
             services.AddScoped<IInboxCleaner, InboxCleaner>();
             services.AddSingleton<ITimeProvider, TimeProvider>();
 
+            services.AddCors(options => options.AddDefaultPolicy(config => config
+                .WithOrigins("http://localhost:4200")
+                .AllowAnyMethod()
+                .AllowAnyHeader()
+                .AllowCredentials()));
+
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
@@ -69,6 +75,8 @@ namespace EmailApp.WebUI
 
             app.UseStaticFiles();
             app.UseRouting();
+
+            app.UseCors();
 
             app.UseAuthorization();
 
