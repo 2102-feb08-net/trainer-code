@@ -1,5 +1,9 @@
 'use strict';
 
+// in angular, we'll use HttpClient instead of fetch or XMLHttpRequest
+// with dependency injection
+// (HttpClient uses rxjs Observables (much more complicated) rather than Promises)
+
 // send a request that will be handled by EmailController.GetInbox based on the
 // route configured with attributes (/api/inbox)
 function loadInbox(account) {

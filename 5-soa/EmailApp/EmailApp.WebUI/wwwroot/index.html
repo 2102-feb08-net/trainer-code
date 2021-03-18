@@ -8,7 +8,13 @@
     <title>My Email - Inbox</title>
 </head>
 
+<!-- angular changes to be descibed in comments -->
+<!-- single page application -->
+<!-- each view in the site won't need to be managing the whole html document, just one part of the DOM -->
+
 <body>
+    <!-- any common/reused parts of pages should definitely become their own components -->
+    <!-- a component in angular is a reusable piece of the page including DOM and logic (managed via a TS class) -->
     <header>
         <nav>
             <ul>
@@ -18,9 +24,17 @@
         </nav>
     </header>
 
+    <!--
+        a situation where i've got a common navbar and different things
+    within the main part of the page, which conceptually you're moving from one page to the next...
+
+    then you should use angular routing (routermodule, routerlink directive, routeroutlet directive)
+    within my root component
+-->
     <main>
         <h1>My Inbox</h1>
 
+        <!-- instead of manual DOM manipulation, we'll use the several kinds of data binding in angular within a component -->
         <table id="inbox-table" hidden>
             <thead>
                 <tr>
