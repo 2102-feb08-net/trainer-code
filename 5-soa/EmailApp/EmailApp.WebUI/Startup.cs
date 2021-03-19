@@ -48,7 +48,7 @@ namespace EmailApp.WebUI
             services.AddHttpClient<TypiCodeService>();
 
             services.AddCors(options => options.AddDefaultPolicy(config => config
-                .WithOrigins("http://localhost:4200")
+                .WithOrigins("http://localhost:4200", "https://2102-escalona-email-ui.azurewebsites.net")
                 .AllowAnyMethod()
                 .AllowAnyHeader()
                 .AllowCredentials()));
