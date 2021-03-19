@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using EmailApp.Business;
+using EmailApp.Business.TypiCode;
 using EmailApp.DataAccess;
 using EmailApp.DataAccess.EfModel;
 using Microsoft.AspNetCore.Builder;
@@ -42,6 +43,8 @@ namespace EmailApp.WebUI
             services.AddScoped<IMessageRepository, MessageRepository>();
             services.AddScoped<IInboxCleaner, InboxCleaner>();
             services.AddSingleton<ITimeProvider, TimeProvider>();
+
+            services.AddHttpClient<TypiCodeService>();
 
             services.AddCors(options => options.AddDefaultPolicy(config => config
                 .WithOrigins("http://localhost:4200")
