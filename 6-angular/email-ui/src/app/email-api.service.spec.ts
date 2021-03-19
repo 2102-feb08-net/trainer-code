@@ -21,9 +21,9 @@ describe('EmailApiService', () => {
   });
 
   it('getMessages should get messages', () => {
-    let passedUrl: string = '';
     const observable: Observable<Message[]> = of([]);
 
+    // let passedUrl: string = '';
     // const fakeClient = {
     //   get(url: string) {
     //     passedUrl = url;
@@ -37,7 +37,9 @@ describe('EmailApiService', () => {
     const service = new EmailApiService(spyClient);
     const result = service.getMessages();
 
-    expect(spyClient.get).toHaveBeenCalledWith('https://localhost:5001/api/inbox');
+    expect(spyClient.get).toHaveBeenCalledWith(
+      'https://localhost:5001/api/inbox'
+    );
     expect(result).toBe(observable);
   });
 });
