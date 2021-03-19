@@ -60,3 +60,12 @@ steps:
   displayName: sonar publish analysis result
   inputs:
     pollingTimeoutSec: '300'
+
+- task: AzureRmWebAppDeployment@4
+  displayName: app service deploy
+  inputs:
+    ConnectionType: 'AzureRM'
+    azureSubscription: 'Training(0c61e2ed-4a6a-437f-9a03-1f223527220b)'
+    appType: 'webApp'
+    WebAppName: '2102-escalona-email-ui'
+    packageForLinux: '$(appDirectory)/dist/email-ui'
