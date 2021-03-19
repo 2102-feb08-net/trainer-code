@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using EmailApp.Business.TypiCode;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -20,6 +21,7 @@ namespace EmailApp.WebUI.Controllers
         }
 
         [HttpGet("users")]
+        [Authorize] // auto respond with a 401 if you're not logged in
         public async Task<IActionResult> GetUsers()
         {
             IEnumerable<User> result = await _typiCode.GetUsersAsync();

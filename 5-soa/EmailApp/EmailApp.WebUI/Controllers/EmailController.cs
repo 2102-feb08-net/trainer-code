@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using EmailApp.Business;
 using EmailApp.DataAccess;
 using EmailApp.WebUI.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -42,6 +43,27 @@ namespace EmailApp.WebUI.Controllers
                 Id = e.Id, 
                 Subject = e.Subject
             });
+        }
+
+
+        [HttpGet("api/users/{user}/inbox")]
+        [Authorize]
+        public async Task<IActionResult> GetUserInbox(string user)
+        {
+            if (User.Identity.Name != user)
+            {
+                return Forbid("not authorized to view another user's inbox");
+            }
+
+            var messages = await _messageRepository.ListAsync();
+            return Ok(messages.Select(e => new Message
+            {
+                Body = e.Body,
+                Date = e.Sent,
+                From = e.From,
+                Id = e.Id,
+                Subject = e.Subject
+            }));
         }
 
         [HttpGet("api/messages/{id}")]

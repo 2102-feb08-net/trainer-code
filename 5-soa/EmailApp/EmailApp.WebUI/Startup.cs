@@ -7,6 +7,7 @@ using EmailApp.Business;
 using EmailApp.Business.TypiCode;
 using EmailApp.DataAccess;
 using EmailApp.DataAccess.EfModel;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -51,6 +52,13 @@ namespace EmailApp.WebUI
                 .AllowAnyMethod()
                 .AllowAnyHeader()
                 .AllowCredentials()));
+
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(options =>
+                {
+                    options.Authority = "https://dev-723797.okta.com/oauth2/default";
+                    options.Audience = "api://default";
+                });
 
             services.AddControllers();
             services.AddSwaggerGen(c =>
