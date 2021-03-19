@@ -4,7 +4,7 @@ import { Observable, of } from 'rxjs';
 import Message from './message';
 
 @Injectable({
-  providedIn: 'root', // singleton for whole app
+  providedIn: 'root', // singleton for whole app (includes the tests)
 })
 export class EmailApiService {
   private readonly baseUrl = 'https://localhost:5001';
