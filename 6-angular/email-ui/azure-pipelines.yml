@@ -38,3 +38,25 @@ steps:
 - script: npx ng test --browsers ChromeHeadless --no-watch --code-coverage
   displayName: ng test
   workingDirectory: $(appDirectory)
+
+# ng e2e... exercise for the reader
+
+- task: SonarCloudPrepare@1
+  displayName: sonar prepare analysis
+  inputs:
+    SonarCloud: 'sonarcloud-escalonn'
+    organization: '2102-feb08-net'
+    scannerMode: 'CLI'
+    configMode: 'manual'
+    cliProjectKey: '2102-feb08-net_trainer-code-email-ui'
+    cliProjectName: 'Email UI'
+    cliSources: '$(appDirectory)/src'
+    extraProperties: 'sonar.javascript.lcov.reportPaths=$(appDirectory)/coverage/email-ui/lcov.info'
+
+- task: SonarCloudAnalyze@1
+  displayName: sonar run analysis
+
+- task: SonarCloudPublish@1
+  displayName: sonar publish analysis result
+  inputs:
+    pollingTimeoutSec: '300'
