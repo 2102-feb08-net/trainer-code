@@ -23,6 +23,7 @@
   <ItemGroup>
     <ProjectReference Include="..\EmailApp.Business\EmailApp.Business.csproj" />
     <ProjectReference Include="..\EmailApp.DataAccess\EmailApp.DataAccess.csproj" />
+    <ProjectReference Include="..\EmailApp.WebUI\EmailApp.WebUI.csproj" />
   </ItemGroup>
 
 </Project>

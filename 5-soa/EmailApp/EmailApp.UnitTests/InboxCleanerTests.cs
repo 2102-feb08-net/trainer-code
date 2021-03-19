@@ -28,8 +28,7 @@ namespace EmailApp.UnitTests
 
             var mockRepo = new Mock<IMessageRepository>();
             mockRepo.Setup(r => r.ListAsync()).ReturnsAsync(emails).Verifiable();
-            mockRepo.Setup(r => r.Delete(It.IsAny<int>())).Verifiable();
-            mockRepo.Setup(r => r.SaveAsync()).Verifiable();
+            mockRepo.Setup(r => r.DeleteAsync(It.IsAny<int>())).Verifiable();
 
             var cleaner = new InboxCleaner(mockRepo.Object);
 
@@ -38,13 +37,12 @@ namespace EmailApp.UnitTests
 
             // assert
             mockRepo.Verify(r => r.ListAsync());
-            mockRepo.Verify(r => r.Delete(emails[0].Id), Times.Once);
-            mockRepo.Verify(r => r.SaveAsync()); // would be nice to verify it was awaited
+            mockRepo.Verify(r => r.DeleteAsync(emails[0].Id), Times.Once); // would be nice to verify it was awaited
             mockRepo.VerifyNoOtherCalls();
         }
 
         [Fact]
-        public void CleanInbox_CleansOneSpam()
+        public async Task CleanInbox_CleansOneSpam()
         {
             // arrange
             var emails = new[]
@@ -56,11 +54,10 @@ namespace EmailApp.UnitTests
             var cleaner = new InboxCleaner(repo);
 
             // act
-            cleaner.CleanInboxAsync();
+            await cleaner.CleanInboxAsync();
 
             // assert
             Assert.Equal(emails[0].Id, repo.DeletedIds.Single());
-            Assert.True(repo.Saved);
         }
 
         // Moq is a library that can help replace/simplify this way of testing.
@@ -83,18 +80,13 @@ namespace EmailApp.UnitTests
                 return Task.FromResult(_emails);
             }
 
-            public void Delete(int id)
+            public Task DeleteAsync(int id)
             {
                 DeletedIds.Add(id);
-            }
-
-            public Task SaveAsync()
-            {
-                Saved = true;
                 return Task.CompletedTask;
             }
 
-            public void Create(Email email) => throw new NotImplementedException();
+            public Task<Email> CreateAsync(Email email) => throw new NotImplementedException();
             public Task<Email> GetAsync(int id) => throw new NotImplementedException();
         }
     }

@@ -47,28 +47,31 @@ namespace EmailApp.DataAccess
             };
         }
 
-        public void Create(Email email)
+        public async Task<Email> CreateAsync(Email email)
         {
-            Account account = _emailContext.Accounts.First(a => a.Address == email.From);
+            Account account = await _emailContext.Accounts.FirstAsync(a => a.Address == email.From);
 
-            _emailContext.Messages.Add(new Message
+            var entity = new Message
             {
                 Body = email.Body,
                 Subject = email.Subject,
                 Date = email.Sent,
                 From = account
-            });
+            };
+            _emailContext.Messages.Add(entity);
+
+            await _emailContext.SaveChangesAsync();
+
+            email.Id = entity.Id;
+            return email;
         }
 
-        public void Delete(int id)
+        public async Task DeleteAsync(int id)
         {
             var message = _emailContext.Messages
                 .First(m => m.Id == id);
             _emailContext.Messages.Remove(message);
-        }
 
-        public async Task SaveAsync()
-        {
             await _emailContext.SaveChangesAsync();
         }
     }

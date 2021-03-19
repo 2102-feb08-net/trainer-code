@@ -31,7 +31,7 @@ namespace EmailApp.WebUI.Controllers
 
         // distinguish what HTTP method (GET, POST, etc.) this will accept, and, what URL
         [HttpGet("api/inbox")]
-        public async Task<IEnumerable<Message>> GetInboxAsync()
+        public async Task<IEnumerable<Message>> GetInbox()
         {
             var messages = await _messageRepository.ListAsync();
             return messages.Select(e => new Message
@@ -45,7 +45,7 @@ namespace EmailApp.WebUI.Controllers
         }
 
         [HttpGet("api/messages/{id}")]
-        public async Task<Message> GetMessageAsync(int id)
+        public async Task<Message> GetMessage(int id)
         {
             var email = await _messageRepository.GetAsync(id);
             return new Message
@@ -62,7 +62,7 @@ namespace EmailApp.WebUI.Controllers
         // will deserialize data in the request body (JSON text)
         // into the action method parameters.
         [HttpPost("api/outbox")]
-        public async Task SendMessageAsync(Message message, string option)
+        public async Task<IActionResult> SendMessage(Message message, string option)
         {
             // could do custom server-side validation right here
 
@@ -73,12 +73,23 @@ namespace EmailApp.WebUI.Controllers
                 From = message.From,
                 Subject = message.Subject
             };
-            _messageRepository.Create(email);
-            await _messageRepository.SaveAsync();
+            var createdEmail = await _messageRepository.CreateAsync(email);
+            var result = new Message
+            {
+                Body = createdEmail.Body,
+                Date = createdEmail.Sent,
+                From = createdEmail.From,
+                Subject = createdEmail.Subject
+            };
+            // if you put something wrong here for action name or parameters,
+            // this wil throw an exception during result execution. exceptions thrown after the response
+            //   has started to be written to, asp.net just truncates the response
+            //      this is sometimes interpreted by the browser as a CORS error (who knows why)
+            return CreatedAtAction(nameof(GetMessage), new { id = createdEmail.Id }, result);
         }
 
         [HttpPost("api/clean-inbox")]
-        public async Task CleanInboxAsync()
+        public async Task CleanInbox()
         {
             await _inboxCleaner.CleanInboxAsync();
         }

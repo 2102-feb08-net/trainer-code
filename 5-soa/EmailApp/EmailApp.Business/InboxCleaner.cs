@@ -23,9 +23,8 @@ namespace EmailApp.Business
 
             foreach (int id in spam.Select(e => e.Id))
             {
-                _messageRepository.Delete(id);
+                await _messageRepository.DeleteAsync(id);
             }
-            await _messageRepository.SaveAsync();
         }
     }
 }

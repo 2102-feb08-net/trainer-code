@@ -43,66 +43,33 @@ namespace EmailApp.IntegrationTests
         // should also test error scenarios
 
         [Fact]
-        public void Create_CreateValidEmail()
+        public async Task Create_CreateValidEmail()
         {
             // arrange
-            using var contextFactory = new TestEmailContextFactory();
-            using var context = contextFactory.CreateContext();
-            var from = new Account { Address = "from@from.com" };
-            context.Accounts.Add(from);
-            context.SaveChanges();
             var emailToCreate = new Business.Email
             {
                 Body = "asdf",
                 Sent = new DateTimeOffset(2021, 1, 1, 0, 0, 0, new TimeSpan(0)),
-                From = from.Address,
                 Subject = "example subject"
             };
-            var repo = new MessageRepository(context);
-
-            // act
-            repo.Create(emailToCreate);
-            // (that method doesn't savechanges, so i need to use the same context instance to verify)
-
-            // assert
-            Message email = context.Messages.Local.Single(m => m.Date == emailToCreate.Sent);
-            Assert.Equal(emailToCreate.Id, email.Id);
-            Assert.Equal(emailToCreate.Body, email.Body);
-            Assert.Equal(emailToCreate.Sent, email.Date);
-            Assert.Equal(emailToCreate.From, email.From.Address);
-            Assert.Equal(emailToCreate.Subject, email.Subject);
-        }
-        // should also test error scenarios
-
-        // should also test "saving no changes"
-        [Fact]
-        public void Save_SavesOneCreate()
-        {
-            // arrange
             using var contextFactory = new TestEmailContextFactory();
-            var from = new Account { Address = "from@from.com" };
-            var emailToCreate = new Business.Email
+            using (var context1 = contextFactory.CreateContext())
             {
-                Body = "asdf",
-                Sent = new DateTimeOffset(2021, 1, 1, 0, 0, 0, new TimeSpan(0)),
-                From = from.Address,
-                Subject = "example subject"
-            };
-            using (var arrangeActContext = contextFactory.CreateContext())
-            {
-                arrangeActContext.Accounts.Add(from);
-                arrangeActContext.SaveChanges();
-                var repo = new MessageRepository(arrangeActContext);
-                repo.Create(emailToCreate);
-                // a email is ready to be saved, but not saved yet
+                var from = new Account { Address = "from@from.com" };
+                emailToCreate.From = from.Address;
+                context1.Accounts.Add(from);
+                context1.SaveChanges();
+                var repo = new MessageRepository(context1);
 
                 // act
-                repo.SaveAsync();
+                await repo.CreateAsync(emailToCreate);
             }
+            // (that method saves changes, so i need to use a different context instance to verify)
 
             // assert
-            using var assertContext = contextFactory.CreateContext();
-            Message email = assertContext.Messages.Include(m => m.From).Single(m => m.Date == emailToCreate.Sent);
+            using var context2 = contextFactory.CreateContext();
+            Message email = context2.Messages.Single(m => m.Date == emailToCreate.Sent);
+            Assert.Equal(emailToCreate.Id, email.Id);
             Assert.Equal(emailToCreate.Body, email.Body);
             Assert.Equal(emailToCreate.Sent, email.Date);
             Assert.Equal(emailToCreate.From, email.From.Address);
