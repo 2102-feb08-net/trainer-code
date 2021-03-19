@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
 import { Observable, of } from 'rxjs';
+import { environment } from 'src/environments/environment';
 
 import { EmailApiService } from './email-api.service';
 import Message from './message';
@@ -38,7 +39,7 @@ describe('EmailApiService', () => {
     const result = service.getMessages();
 
     expect(spyClient.get).toHaveBeenCalledWith(
-      'https://localhost:5001/api/inbox'
+      `${environment.emailApiBaseUrl}/api/inbox`
     );
     expect(result).toBe(observable);
   });
