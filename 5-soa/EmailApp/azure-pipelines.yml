@@ -16,7 +16,6 @@ stages:
 - stage: build
 
   variables:
-    buildConfiguration: Release
     appDirectory: 5-soa/EmailApp
 
   jobs:
@@ -28,11 +27,11 @@ stages:
       inputs:
         packageType: 'sdk'
         version: '5.0.x'
-    
-    - script: dotnet publish --configuration $(buildConfiguration) --output $(Build.StagingDirectory)/app
+
+    - script: dotnet publish --configuration Release --output $(Build.StagingDirectory)/app
       displayName: dotnet publish
       workingDirectory: $(appDirectory)
-    
+
     - publish: $(Build.StagingDirectory)/app
       artifact: app
       displayName: publish assemblies
@@ -59,19 +58,56 @@ stages:
         organization: '2102-feb08-net'
         scannerMode: 'MSBuild'
         projectKey: '2102-feb08-net_trainer-code'
-        projectName: 'EmailApp'
+        projectName: 'trainer-code/5-soa/EmailApp'
         extraProperties: 'sonar.cs.opencover.reportsPaths=$(Agent.TempDirectory)/*/coverage.opencover.xml'
 
-    - script: dotnet build --configuration $(buildConfiguration)
+    - script: dotnet build --configuration Release
       displayName: dotnet build
       workingDirectory: $(appDirectory)
 
-    - task: DotNetCoreCLI@2
-      displayName: dotnet test
+    - script: dotnet test EmailApp.UnitTests
+        --configuration Release
+        --collect:"XPlat Code Coverage"
+        --logger trx
+        --no-build
+        --results-directory $(Common.TestResultsDirectory)/unit
+        --
+        DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Format=cobertura,opencover
+      displayName: dotnet unit test
+      workingDirectory: $(appDirectory)
+
+    - task: PublishTestResults@2
+      displayName: publish unit test results
       inputs:
-        command: 'test'
-        arguments: '--configuration $(buildConfiguration) --collect "xplat code coverage" -- DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Format=cobertura,opencover'
-        workingDirectory: '$(appDirectory)'
+        testResultsFormat: 'VSTest'
+        testResultsFiles: '*.trx'
+        searchFolder: '$(Common.TestResultsDirectory)/unit'
+        testRunTitle: 'unit'
+
+    - script: dotnet test EmailApp.IntegrationTests
+        --configuration Release
+        --collect:"XPlat Code Coverage"
+        --logger trx
+        --no-build
+        --results-directory $(Common.TestResultsDirectory)/int
+        --
+        DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Format=cobertura,opencover
+      displayName: dotnet integration test
+      workingDirectory: $(appDirectory)
+
+    - task: PublishTestResults@2
+      displayName: publish integration test results
+      inputs:
+        testResultsFormat: 'VSTest'
+        testResultsFiles: '*.trx'
+        searchFolder: '$(Common.TestResultsDirectory)/int'
+        testRunTitle: 'integration'
+
+    - task: PublishCodeCoverageResults@1
+      displayName: publish code coverage reports
+      inputs:
+        codeCoverageTool: 'Cobertura'
+        summaryFileLocation: '$(Common.TestResultsDirectory)/*/coverage.cobertura.xml'
 
     - task: SonarCloudAnalyze@1
       displayName: sonar run analysis
@@ -81,11 +117,6 @@ stages:
       inputs:
         pollingTimeoutSec: '300'
 
-    - task: PublishCodeCoverageResults@1
-      displayName: publish code coverage report
-      inputs:
-        codeCoverageTool: 'Cobertura'
-        summaryFileLocation: '$(Agent.TempDirectory)/*/coverage.cobertura.xml'
 
 - stage: deploy
   condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))

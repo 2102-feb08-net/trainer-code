@@ -52,6 +52,7 @@ namespace EmailApp.IntegrationTests
                 Sent = new DateTimeOffset(2021, 1, 1, 0, 0, 0, new TimeSpan(0)),
                 Subject = "example subject"
             };
+            int id;
             using var contextFactory = new TestEmailContextFactory();
             using (var context1 = contextFactory.CreateContext())
             {
@@ -62,13 +63,14 @@ namespace EmailApp.IntegrationTests
                 var repo = new MessageRepository(context1);
 
                 // act
-                await repo.CreateAsync(emailToCreate);
+                var returnedEmail = await repo.CreateAsync(emailToCreate);
+                id = returnedEmail.Id;
             }
             // (that method saves changes, so i need to use a different context instance to verify)
 
             // assert
             using var context2 = contextFactory.CreateContext();
-            Message email = context2.Messages.Single(m => m.Date == emailToCreate.Sent);
+            Message email = context2.Messages.Include(m => m.From).Single(m => m.Id == id);
             Assert.Equal(emailToCreate.Id, email.Id);
             Assert.Equal(emailToCreate.Body, email.Body);
             Assert.Equal(emailToCreate.Sent, email.Date);
