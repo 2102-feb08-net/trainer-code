@@ -29,11 +29,11 @@ stages:
         packageType: 'sdk'
         version: '5.0.x'
     
-    - script: dotnet publish --configuration $(buildConfiguration) --output $(System.ArtifactStagingDirectory)/app
+    - script: dotnet publish --configuration $(buildConfiguration) --output $(Build.StagingDirectory)/app
       displayName: dotnet publish
       workingDirectory: $(appDirectory)
     
-    - publish: $(System.ArtifactStagingDirectory)/app
+    - publish: $(Build.StagingDirectory)/app
       artifact: app
       displayName: publish assemblies
 
@@ -100,7 +100,7 @@ stages:
           - download: current
             artifact: app
             displayName: download app assemblies
-          
+
           - task: AzureRmWebAppDeployment@4
             displayName: app service deploy
             inputs:
