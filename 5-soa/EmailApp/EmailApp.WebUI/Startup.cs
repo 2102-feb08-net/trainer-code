@@ -1,23 +1,15 @@
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
 using EmailApp.Business;
 using EmailApp.Business.TypiCode;
 using EmailApp.DataAccess;
 using EmailApp.DataAccess.EfModel;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Rewrite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 
 namespace EmailApp.WebUI
@@ -31,7 +23,6 @@ namespace EmailApp.WebUI
 
         public IConfiguration Configuration { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
             string connectionString = Configuration.GetConnectionString("EmailDb");
@@ -47,11 +38,18 @@ namespace EmailApp.WebUI
 
             services.AddHttpClient<TypiCodeService>();
 
-            services.AddCors(options => options.AddDefaultPolicy(config => config
-                .WithOrigins("http://localhost:4200", "https://2102-escalona-email-ui.azurewebsites.net")
-                .AllowAnyMethod()
-                .AllowAnyHeader()
-                .AllowCredentials()));
+            // most of these strings would be better read from configuration,
+            // since we might want them to vary from one environment to another
+            // like the connection string can
+
+            services.AddCors(options =>
+                options.AddDefaultPolicy(config => config
+                    .WithOrigins(
+                        "http://localhost:4200",
+                        "https://2102-escalona-email-ui.azurewebsites.net")
+                    .AllowAnyMethod()
+                    .AllowAnyHeader()
+                    .AllowCredentials()));
 
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
@@ -60,6 +58,25 @@ namespace EmailApp.WebUI
                     options.Audience = "api://default";
                 });
 
+            services.AddAuthorization(options =>
+            {
+                // all action methods without [AllowAnonymous] or [Authorize(...)]
+                // will default to [Authorize], i.e. must be authenticated
+                options.FallbackPolicy = new AuthorizationPolicyBuilder()
+                    .RequireAuthenticatedUser()
+                    .Build();
+
+                // this could be a separate authorization handler class
+                // (more unit testable, could access dependency injection (e.g. repository) if needed)
+                options.AddPolicy("SameUserAddress", policy => policy.RequireAssertion(context =>
+                {
+                    string resourceAddress = (string)context.Resource;
+                    string userAddress = context.User.FindFirst(ct => ct.Type.Contains("nameidentifier")).Value;
+
+                    return resourceAddress == userAddress;
+                }));
+            });
+
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
@@ -67,7 +84,6 @@ namespace EmailApp.WebUI
             });
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
@@ -77,18 +93,13 @@ namespace EmailApp.WebUI
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "EmailApp.WebUI v1"));
             }
 
-            app.UseStatusCodePages();
-
             app.UseHttpsRedirection();
 
-            app.UseRewriter(new RewriteOptions()
-                .AddRedirect("^$", "index.html"));
-
-            app.UseStaticFiles();
             app.UseRouting();
 
             app.UseCors();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>

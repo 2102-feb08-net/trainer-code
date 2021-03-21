@@ -1,0 +1,21 @@
+﻿using System;
+using System.ComponentModel.DataAnnotations;
+using EmailApp.WebUI.Validation;
+
+namespace EmailApp.WebUI.Dtos
+{
+    public class MessageInput
+    {
+        [Required]
+        [PastDate]
+        public DateTimeOffset? Date { get; set; }
+
+        [Required]
+        [EmailAddress]
+        public string From { get; set; }
+
+        public string Subject { get; set; }
+
+        public string Body { get; set; }
+    }
+}

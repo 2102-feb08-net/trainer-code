@@ -36,7 +36,7 @@ namespace EmailApp.IntegrationTests
             // assert
             Assert.Equal(insertedEmail.Id, email.Id);
             Assert.Equal(insertedEmail.Body, email.Body);
-            Assert.Equal(insertedEmail.Date, email.Sent);
+            Assert.Equal(insertedEmail.Date, email.OrigDate);
             Assert.Equal(insertedEmail.From.Address, email.From);
             Assert.Equal(insertedEmail.Subject, email.Subject);
         }
@@ -49,7 +49,7 @@ namespace EmailApp.IntegrationTests
             var emailToCreate = new Business.Email
             {
                 Body = "asdf",
-                Sent = new DateTimeOffset(2021, 1, 1, 0, 0, 0, new TimeSpan(0)),
+                OrigDate = new DateTimeOffset(2021, 1, 1, 0, 0, 0, new TimeSpan(0)),
                 Subject = "example subject"
             };
             int id;
@@ -73,7 +73,7 @@ namespace EmailApp.IntegrationTests
             Message email = context2.Messages.Include(m => m.From).Single(m => m.Id == id);
             Assert.Equal(emailToCreate.Id, email.Id);
             Assert.Equal(emailToCreate.Body, email.Body);
-            Assert.Equal(emailToCreate.Sent, email.Date);
+            Assert.Equal(emailToCreate.OrigDate, email.Date);
             Assert.Equal(emailToCreate.From, email.From.Address);
             Assert.Equal(emailToCreate.Subject, email.Subject);
         }

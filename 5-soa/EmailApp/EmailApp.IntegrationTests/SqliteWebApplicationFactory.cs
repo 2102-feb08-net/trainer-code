@@ -40,26 +40,24 @@ namespace EmailApp.IntegrationTests
 
                 var sp = services.BuildServiceProvider();
 
-                using (var scope = sp.CreateScope())
-                {
-                    var scopedServices = scope.ServiceProvider;
-                    var db = scopedServices.GetRequiredService<EmailContext>();
+                using var scope = sp.CreateScope();
+                var scopedServices = scope.ServiceProvider;
+                var db = scopedServices.GetRequiredService<EmailContext>();
 
-                    db.Database.EnsureCreated();
+                db.Database.EnsureCreated();
 
-                    // if we needed initial data different from what the context has in HasData calls, then...
-                    //var logger = scopedServices
-                    //    .GetRequiredService<ILogger<CustomWebApplicationFactory<TStartup>>>();
-                    //try
-                    //{
-                    //    Utilities.InitializeDbForTests(db);
-                    //}
-                    //catch (Exception ex)
-                    //{
-                    //    logger.LogError(ex, "An error occurred seeding the " +
-                    //        "database with test messages. Error: {Message}", ex.Message);
-                    //}
-                }
+                // if we needed initial data different from what the context has in HasData calls, then...
+                //var logger = scopedServices
+                //    .GetRequiredService<ILogger<CustomWebApplicationFactory<TStartup>>>();
+                //try
+                //{
+                //    Utilities.InitializeDbForTests(db);
+                //}
+                //catch (Exception ex)
+                //{
+                //    logger.LogError(ex, "An error occurred seeding the " +
+                //        "database with test messages. Error: {Message}", ex.Message);
+                //}
             });
         }
 

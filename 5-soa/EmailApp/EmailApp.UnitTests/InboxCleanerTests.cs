@@ -13,7 +13,7 @@ namespace EmailApp.UnitTests
         [Fact]
         public void Constructor_Accepts_Null()
         {
-            var cleaner = new InboxCleaner(null);
+            _ = new InboxCleaner(null);
         }
 
         [Fact]

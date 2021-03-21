@@ -27,22 +27,25 @@ namespace EmailApp.DataAccess
                     Id = m.Id,
                     Body = m.Body,
                     From = m.From.Address,
-                    Sent = m.Date,
+                    OrigDate = m.Date,
                     Subject = m.Subject
                 }).ToListAsync();
         }
 
         public async Task<Email> GetAsync(int id)
         {
-            var message = await _emailContext.Messages
+            if (await _emailContext.Messages
                 .Include(m => m.From)
-                .FirstAsync(m => m.Id == id);
+                .FirstOrDefaultAsync(m => m.Id == id) is not Message message)
+            {
+                return null;
+            }
             return new Email
             {
                 Id = message.Id,
                 Body = message.Body,
                 From = message.From.Address,
-                Sent = message.Date,
+                OrigDate = message.Date,
                 Subject = message.Subject
             };
         }
@@ -55,7 +58,7 @@ namespace EmailApp.DataAccess
             {
                 Body = email.Body,
                 Subject = email.Subject,
-                Date = email.Sent,
+                Date = email.OrigDate,
                 From = account
             };
             _emailContext.Messages.Add(entity);

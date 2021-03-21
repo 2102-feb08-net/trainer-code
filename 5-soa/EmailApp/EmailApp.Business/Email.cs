@@ -9,7 +9,7 @@ namespace EmailApp.Business
         public string Body { get; set; }
         public string Subject { get; set; }
         public string From { get; set; }
-        public DateTimeOffset Sent { get; set; }
+        public DateTimeOffset OrigDate { get; set; }
 
         public List<Email> Previous { get; set; }
         public List<Email> Subsequent { get; set; }

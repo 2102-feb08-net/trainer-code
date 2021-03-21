@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using EmailApp.Business;
 using EmailApp.WebUI.Controllers;
-using EmailApp.WebUI.Models;
+using EmailApp.WebUI.Dtos;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using Xunit;
@@ -18,24 +18,24 @@ namespace EmailApp.UnitTests
         public async Task SendMessage_ValidMessage_AddsToRepo()
         {
             // arrange
-            Message toSend = new()
+            MessageInput toSend = new()
             {
-                From = "kevin@kevin.com"
+                From = "kevin@kevin.com",
+                Date = new DateTime(2021, 1, 1)
             };
             Email created = new()
             {
                 Id = 3,
-                From = "kevin@kevin.com"
+                From = toSend.From,
+                OrigDate = (DateTimeOffset)toSend.Date
             };
             List<Email> results = new();
             var mockRepo = new Mock<IMessageRepository>();
             mockRepo.Setup(r => r.CreateAsync(Capture.In(results))).ReturnsAsync(created).Verifiable();
-            var mockCleaner = new Mock<IInboxCleaner>();
-            var mockTime = new Mock<ITimeProvider>();
-            var controller = new EmailController(mockRepo.Object, mockCleaner.Object, mockTime.Object);
+            var controller = new MailController(mockRepo.Object);
 
             // act
-            IActionResult result = await controller.SendMessage(toSend, null);
+            IActionResult result = await controller.SendMessage(toSend);
 
             // assert
             mockRepo.Verify(r => r.CreateAsync(It.IsAny<Email>()), Times.Once);

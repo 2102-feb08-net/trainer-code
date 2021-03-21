@@ -7,7 +7,12 @@ trigger:
     - 5-soa/EmailApp
 
 pr:
-- main
+  branches:
+    include:
+    - main
+  paths:
+    include:
+    - 5-soa/EmailApp
 
 pool:
   vmImage: ubuntu-latest

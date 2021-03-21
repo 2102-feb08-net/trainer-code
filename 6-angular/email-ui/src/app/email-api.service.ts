@@ -13,6 +13,6 @@ export class EmailApiService {
   constructor(private http: HttpClient) {}
 
   getMessages(): Observable<Message[]> {
-    return this.http.get<Message[]>(`${this.baseUrl}/api/inbox`);
+    return this.http.get<Message[]>(`${this.baseUrl}/api/mail`);
   }
 }
