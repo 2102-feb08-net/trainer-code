@@ -10,15 +10,15 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EmailApp.DataAccess.Migrations
 {
     [DbContext(typeof(EmailContext))]
-    [Migration("20210303171054_AddMeInSeedData")]
-    partial class AddMeInSeedData
+    [Migration("20210321064810_Initial")]
+    partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
-                .HasAnnotation("ProductVersion", "5.0.3")
+                .HasAnnotation("ProductVersion", "5.0.4")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
             modelBuilder.Entity("EmailApp.DataAccess.EfModel.Account", b =>
@@ -29,13 +29,13 @@ namespace EmailApp.DataAccess.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Address")
+                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("Address")
-                        .IsUnique()
-                        .HasFilter("[Address] IS NOT NULL");
+                        .IsUnique();
 
                     b.ToTable("Accounts");
 
@@ -43,17 +43,7 @@ namespace EmailApp.DataAccess.Migrations
                         new
                         {
                             Id = 1,
-                            Address = "fred@fred.com"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Address = "kevin@kevin.com"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Address = "me@me.com"
+                            Address = "nick.escalona@revature.com"
                         });
                 });
 
@@ -65,22 +55,36 @@ namespace EmailApp.DataAccess.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Body")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTimeOffset>("Date")
-                        .HasColumnType("datetimeoffset");
 
                     b.Property<int>("FromId")
                         .HasColumnType("int");
 
+                    b.Property<Guid>("Guid")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<bool>("IsDeleted")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
+
+                    b.Property<DateTimeOffset>("OrigDate")
+                        .HasColumnType("datetimeoffset(0)");
+
                     b.Property<string>("Subject")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("ToId")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
                     b.HasIndex("FromId");
+
+                    b.HasIndex("Guid")
+                        .IsUnique();
+
+                    b.HasIndex("ToId");
 
                     b.ToTable("Messages");
 
@@ -88,18 +92,24 @@ namespace EmailApp.DataAccess.Migrations
                         new
                         {
                             Id = 1,
-                            Body = "Aenean elit massa, eleifend id feugiat a, semper in massa. Praesent ex lectus, vehicula eget mi ut, dictum commodo tortor. Sed congue leo ac mollis hendrerit. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Pellentesque ut magna non sapien efficitur ullamcorper. Donec elementum, purus aliquet facilisis auctor, massa justo finibus leo, a feugiat purus tortor vitae ante. Suspendisse ipsum nibh, tincidunt congue mattis ut, tristique in felis.",
-                            Date = new DateTimeOffset(new DateTime(2021, 3, 1, 12, 58, 58, 0, DateTimeKind.Unspecified), new TimeSpan(0, -7, 0, 0, 0)),
+                            Body = "this is a message to say hello",
                             FromId = 1,
-                            Subject = "qc"
+                            Guid = new Guid("57d462ca-a9ce-4417-b8a4-d9b59907c7a6"),
+                            IsDeleted = false,
+                            OrigDate = new DateTimeOffset(new DateTime(2021, 3, 20, 22, 37, 10, 0, DateTimeKind.Unspecified), new TimeSpan(0, -6, 0, 0, 0)),
+                            Subject = "hello",
+                            ToId = 1
                         },
                         new
                         {
                             Id = 2,
-                            Body = "Donec egestas lorem viverra augue placerat interdum. Nulla id mollis purus. Quisque eget libero ultricies est tincidunt tempor. Integer lobortis sapien et pellentesque tincidunt. Nulla euismod pulvinar lorem sed pellentesque. Ut sit amet quam non elit pharetra cursus. In hac habitasse platea dictumst. Proin accumsan a justo ac molestie. Phasellus eu metus neque. Donec vel sollicitudin libero. Donec sed leo leo.",
-                            Date = new DateTimeOffset(new DateTime(2021, 3, 1, 13, 0, 10, 0, DateTimeKind.Unspecified), new TimeSpan(0, -7, 0, 0, 0)),
-                            FromId = 2,
-                            Subject = "RE: qc"
+                            Body = "this is a reply to hello",
+                            FromId = 1,
+                            Guid = new Guid("bd682c41-68db-4c00-9dd2-814b8013e563"),
+                            IsDeleted = false,
+                            OrigDate = new DateTimeOffset(new DateTime(2021, 3, 20, 22, 40, 1, 0, DateTimeKind.Unspecified), new TimeSpan(0, -6, 0, 0, 0)),
+                            Subject = "Re: hello",
+                            ToId = 1
                         });
                 });
 
@@ -111,11 +121,19 @@ namespace EmailApp.DataAccess.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("EmailApp.DataAccess.EfModel.Account", "To")
+                        .WithMany("ReceivedMessages")
+                        .HasForeignKey("ToId");
+
                     b.Navigation("From");
+
+                    b.Navigation("To");
                 });
 
             modelBuilder.Entity("EmailApp.DataAccess.EfModel.Account", b =>
                 {
+                    b.Navigation("ReceivedMessages");
+
                     b.Navigation("SentMessages");
                 });
 #pragma warning restore 612, 618

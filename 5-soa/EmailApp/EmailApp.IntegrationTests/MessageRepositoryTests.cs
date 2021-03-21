@@ -21,22 +21,23 @@ namespace EmailApp.IntegrationTests
             // insert test data here, or maybe have a helper method somewhere to possibly share it between tests
             var insertedEmail = new Message
             {
-                Body = "asdf",
-                Date = new DateTimeOffset(2021, 1, 1, 0, 0, 0, new TimeSpan(0)),
+                Guid = Guid.NewGuid(),
+                OrigDate = new DateTimeOffset(2021, 1, 1, 0, 0, 0, new TimeSpan(0)),
                 From = new Account { Address = "from@from.com" },
-                Subject = "example subject"
+                Subject = "example subject",
+                Body = "asdf"
             };
             context.Messages.Add(insertedEmail);
             context.SaveChanges();
             var repo = new MessageRepository(context);
 
             // act
-            Business.Email email = await repo.GetAsync(insertedEmail.Id);
+            Business.Email email = await repo.GetAsync(insertedEmail.Guid);
 
             // assert
-            Assert.Equal(insertedEmail.Id, email.Id);
+            Assert.Equal(insertedEmail.Guid, email.Id);
             Assert.Equal(insertedEmail.Body, email.Body);
-            Assert.Equal(insertedEmail.Date, email.OrigDate);
+            Assert.Equal(insertedEmail.OrigDate, email.OrigDate);
             Assert.Equal(insertedEmail.From.Address, email.From);
             Assert.Equal(insertedEmail.Subject, email.Subject);
         }
@@ -46,40 +47,38 @@ namespace EmailApp.IntegrationTests
         public async Task Create_CreateValidEmail()
         {
             // arrange
+            var from = new Account { Address = "from@from.com" };
             var emailToCreate = new Business.Email
             {
-                Body = "asdf",
+                Id = Guid.NewGuid(),
                 OrigDate = new DateTimeOffset(2021, 1, 1, 0, 0, 0, new TimeSpan(0)),
-                Subject = "example subject"
+                From = from.Address,
+                Subject = "example subject",
+                Body = "asdf"
             };
-            int id;
             using var contextFactory = new TestEmailContextFactory();
-            using (var context1 = contextFactory.CreateContext())
-            {
-                var from = new Account { Address = "from@from.com" };
-                emailToCreate.From = from.Address;
-                context1.Accounts.Add(from);
-                context1.SaveChanges();
-                var repo = new MessageRepository(context1);
+            using var context = contextFactory.CreateContext();
+            context.Accounts.Add(from);
+            context.SaveChanges();
+            var repo = new MessageRepository(context);
 
-                // act
-                var returnedEmail = await repo.CreateAsync(emailToCreate);
-                id = returnedEmail.Id;
-            }
-            // (that method saves changes, so i need to use a different context instance to verify)
+            // act
+            var returnedEmail = await repo.CreateAsync(emailToCreate);
+            // (that method doesn't save changes, so i need to use the same context instance to verify)
 
             // assert
-            using var context2 = contextFactory.CreateContext();
-            Message email = context2.Messages.Include(m => m.From).Single(m => m.Id == id);
-            Assert.Equal(emailToCreate.Id, email.Id);
-            Assert.Equal(emailToCreate.Body, email.Body);
-            Assert.Equal(emailToCreate.OrigDate, email.Date);
+            Message email = context.Messages.Local.Single(m => m.Guid == emailToCreate.Id);
+            Assert.Equal(EntityState.Added, context.Entry(email).State);
+            Assert.Equal(emailToCreate.Id, email.Guid);
+            Assert.Equal(emailToCreate.OrigDate, email.OrigDate);
             Assert.Equal(emailToCreate.From, email.From.Address);
             Assert.Equal(emailToCreate.Subject, email.Subject);
+            Assert.Equal(emailToCreate.Body, email.Body);
         }
         // should also test error scenarios
 
-        // rule of thumb - have separate context instances for all three stages, arrange, act, and assert
+        // when testing code that uses the context,
+        // consider having separate context instances for all three stages, arrange, act, and assert
         // to ensure everything that should go all the way to/from the database does and nothing else
     }
 }

@@ -14,12 +14,12 @@ namespace EmailApp.WebUI.Controllers
     public class MailboxController : ControllerBase
     {
         private readonly IAuthorizationService _authorizationService;
-        private readonly IMessageRepository _messageRepository;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public MailboxController(IAuthorizationService authorizationService, IMessageRepository messageRepository)
+        public MailboxController(IAuthorizationService authorizationService, IUnitOfWork unitOfWork)
         {
             _authorizationService = authorizationService;
-            _messageRepository = messageRepository;
+            _unitOfWork = unitOfWork;
         }
 
         // GET api/mailbox/c@a.test
@@ -39,12 +39,13 @@ namespace EmailApp.WebUI.Controllers
                 return Forbid();
             }
 
-            var messages = await _messageRepository.ListAsync();
+            var messages = await _unitOfWork.MessageRepository.ListAsync();
             return messages.Select(e => new Message
             {
                 Id = e.Id,
                 Date = e.OrigDate,
                 From = e.From,
+                To = e.To,
                 Subject = e.Subject,
                 Body = e.Body
             }).ToList();

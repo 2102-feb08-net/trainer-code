@@ -32,9 +32,9 @@ namespace EmailApp.WebUI
                 options.UseSqlServer(connectionString);
             });
 
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<IMessageRepository, MessageRepository>();
             services.AddScoped<IInboxCleaner, InboxCleaner>();
-            services.AddSingleton<ITimeProvider, TimeProvider>();
 
             services.AddHttpClient<TypiCodeService>();
 
