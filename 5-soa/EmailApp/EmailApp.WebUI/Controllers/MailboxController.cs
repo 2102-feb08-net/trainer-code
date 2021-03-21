@@ -33,13 +33,13 @@ namespace EmailApp.WebUI.Controllers
 
             // for DRY, this could be an action filter instead
             var authorizationResult = await _authorizationService
-                .AuthorizeAsync(user: User, resource: address, policyName: "SameUserAddress");
+                .AuthorizeAsync(user: User, resource: new[] { address }, policyName: "AllowedAddresses");
             if (!authorizationResult.Succeeded)
             {
                 return Forbid();
             }
 
-            var messages = await _unitOfWork.MessageRepository.ListAsync();
+            var messages = await _unitOfWork.MessageRepository.ListByRecipientAsync(address);
             return messages.Select(e => new Message
             {
                 Id = e.Id,
@@ -56,13 +56,13 @@ namespace EmailApp.WebUI.Controllers
         public async Task<IActionResult> CleanInbox(string address, [FromServices] InboxCleaner inboxCleaner)
         {
             var authorizationResult = await _authorizationService
-                .AuthorizeAsync(user: User, resource: address, policyName: "SameUserAddress");
+                .AuthorizeAsync(user: User, resource: new[] { address }, policyName: "AllowedAddresses");
             if (!authorizationResult.Succeeded)
             {
                 return Forbid();
             }
 
-            await inboxCleaner.CleanInboxAsync();
+            await inboxCleaner.CleanInboxAsync(address);
 
             return NoContent();
         }

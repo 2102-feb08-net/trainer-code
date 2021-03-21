@@ -4,6 +4,6 @@ namespace EmailApp.Business
 {
     public interface IInboxCleaner
     {
-        Task CleanInboxAsync();
+        Task CleanInboxAsync(string address);
     }
 }

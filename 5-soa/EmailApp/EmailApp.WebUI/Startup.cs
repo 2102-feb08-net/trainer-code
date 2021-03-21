@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using System.Linq;
 using EmailApp.Business;
 using EmailApp.Business.TypiCode;
 using EmailApp.DataAccess;
@@ -68,12 +70,12 @@ namespace EmailApp.WebUI
 
                 // this could be a separate authorization handler class
                 // (more unit testable, could access dependency injection (e.g. repository) if needed)
-                options.AddPolicy("SameUserAddress", policy => policy.RequireAssertion(context =>
+                options.AddPolicy("AllowedAddresses", policy => policy.RequireAssertion(context =>
                 {
-                    string resourceAddress = (string)context.Resource;
+                    var allowed = (IEnumerable<string>)context.Resource;
                     string userAddress = context.User.FindFirst(ct => ct.Type.Contains("nameidentifier")).Value;
 
-                    return resourceAddress == userAddress;
+                    return allowed.Contains(userAddress);
                 }));
             });
 

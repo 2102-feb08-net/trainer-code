@@ -7,9 +7,9 @@ namespace EmailApp.WebUI.Validation
     {
         protected override ValidationResult IsValid(object value, ValidationContext validationContext)
         {
-            var date = (DateTimeOffset)validationContext.ObjectInstance;
+            var date = (DateTimeOffset?)validationContext.ObjectInstance;
 
-            if (date < DateTimeOffset.Now)
+            if (date.HasValue && date < DateTimeOffset.Now)
             {
                 return new ValidationResult("Date cannot be in the future");
             }

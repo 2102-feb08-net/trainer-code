@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable, of } from 'rxjs';
+import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import Message from './message';
 
@@ -13,6 +13,6 @@ export class EmailApiService {
   constructor(private http: HttpClient) {}
 
   getMessages(): Observable<Message[]> {
-    return this.http.get<Message[]>(`${this.baseUrl}/api/mail`);
+    return this.http.get<Message[]>(`${this.baseUrl}/api/mailbox/nick.escalona@revature.com`);
   }
 }

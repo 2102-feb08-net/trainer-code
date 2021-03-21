@@ -1,5 +1,4 @@
 import { HttpClient } from '@angular/common/http';
-import { TestBed } from '@angular/core/testing';
 import { Observable, of } from 'rxjs';
 import { environment } from 'src/environments/environment';
 
@@ -7,14 +6,6 @@ import { EmailApiService } from './email-api.service';
 import Message from './message';
 
 describe('EmailApiService', () => {
-  // let service: EmailApiService;
-
-  // beforeEach(() => {
-  //   TestBed.configureTestingModule({});
-  //   service = TestBed.inject(EmailApiService);
-  //   service = new EmailApiService();
-  // });
-
   it('should be created', () => {
     const fakeClient = {} as HttpClient;
     const service = new EmailApiService(fakeClient);
@@ -24,14 +15,6 @@ describe('EmailApiService', () => {
   it('getMessages should get messages', () => {
     const observable: Observable<Message[]> = of([]);
 
-    // let passedUrl: string = '';
-    // const fakeClient = {
-    //   get(url: string) {
-    //     passedUrl = url;
-    //     return observable;
-    //   }
-    // } as HttpClient;
-
     const spyClient = jasmine.createSpyObj('HttpClient', ['get']);
     spyClient.get.and.returnValue(observable);
 
@@ -39,7 +22,7 @@ describe('EmailApiService', () => {
     const result = service.getMessages();
 
     expect(spyClient.get).toHaveBeenCalledWith(
-      `${environment.emailApiBaseUrl}/api/inbox`
+      `${environment.emailApiBaseUrl}/api/mailbox/nick.escalona@revature.com`
     );
     expect(result).toBe(observable);
   });

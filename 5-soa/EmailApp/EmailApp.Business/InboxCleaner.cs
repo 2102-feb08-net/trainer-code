@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace EmailApp.Business
@@ -15,15 +14,15 @@ namespace EmailApp.Business
             _unitOfWork = unitOfWork;
         }
 
-        public async Task CleanInboxAsync()
+        public async Task CleanInboxAsync(string address)
         {
-            var messages = await _unitOfWork.MessageRepository.ListAsync();
+            var messages = await _unitOfWork.MessageRepository.ListByRecipientAsync(address);
             IEnumerable<Email> spam = messages
                 .Where(e => e.IsSpam());
 
             foreach (Guid id in spam.Select(e => e.Id))
             {
-                await _unitOfWork.MessageRepository.DeleteAsync(id);
+                await _unitOfWork.MessageRepository.DeleteByIdAsync(id);
             }
             await _unitOfWork.SaveAsync();
         }

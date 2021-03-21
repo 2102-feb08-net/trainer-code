@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using EmailApp.Business;
+using EmailApp.Business.Exceptions;
 using EmailApp.WebUI.Dtos;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EmailApp.WebUI.Controllers
@@ -12,15 +14,18 @@ namespace EmailApp.WebUI.Controllers
     [ApiController]
     public class MailController : ControllerBase
     {
+        private readonly IAuthorizationService _authorizationService;
         private readonly IUnitOfWork _unitOfWork;
 
-        public MailController(IUnitOfWork unitOfWork)
+        public MailController(IAuthorizationService authorizationService, IUnitOfWork unitOfWork)
         {
+            _authorizationService = authorizationService;
             _unitOfWork = unitOfWork;
         }
 
         // GET api/mail
         [HttpGet]
+        [Authorize(Roles = "admin")]
         public async Task<IEnumerable<Message>> Get()
         {
             var messages = await _unitOfWork.MessageRepository.ListAsync();
@@ -39,10 +44,19 @@ namespace EmailApp.WebUI.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Message>> GetMessage(Guid id)
         {
-            if (await _unitOfWork.MessageRepository.GetAsync(id) is not Email email)
+            if (await _unitOfWork.MessageRepository.GetByIdAsync(id) is not Email email)
             {
                 return NotFound();
             }
+
+            var allowed = new[] { email.From, email.To }.Where(s => s is not null);
+            var authorizationResult = await _authorizationService
+                .AuthorizeAsync(user: User, resource: allowed, policyName: "AllowedAddresses");
+            if (!authorizationResult.Succeeded)
+            {
+                return Forbid();
+            }
+
             return new Message
             {
                 Id = email.Id,
@@ -58,24 +72,44 @@ namespace EmailApp.WebUI.Controllers
         [HttpPost]
         public async Task<IActionResult> SendMessage(MessageInput message)
         {
+            var authorizationResult = await _authorizationService
+                .AuthorizeAsync(user: User, resource: new[] { message.From }, policyName: "AllowedAddresses");
+            if (!authorizationResult.Succeeded)
+            {
+                return Forbid();
+            }
+
             var email = new Email
             {
-                OrigDate = (DateTimeOffset)message.Date,
+                OrigDate = message.Date ?? DateTimeOffset.Now,
                 From = message.From,
                 To = message.To,
                 Subject = message.Subject,
                 Body = message.Body,
             };
-            var createdEmail = await _unitOfWork.MessageRepository.CreateAsync(email);
+            try
+            {
+                await _unitOfWork.MessageRepository.AddAsync(email);
+            }
+            catch (OriginatorAddressNotFoundException)
+            {
+                ModelState.AddModelError(nameof(email.From), $"Originator {email.From} not found.");
+                return BadRequest(ModelState);
+            }
+            catch (DestinationAddressNotFoundException)
+            {
+                ModelState.AddModelError(nameof(email.To), $"Destination {email.To} not found.");
+                return BadRequest(ModelState);
+            }
             await _unitOfWork.SaveAsync();
             var result = new Message
             {
-                Id = createdEmail.Id,
-                Date = createdEmail.OrigDate,
-                From = createdEmail.From,
-                To = createdEmail.To,
-                Subject = createdEmail.Subject,
-                Body = createdEmail.Body
+                Id = email.Id,
+                Date = email.OrigDate,
+                From = email.From,
+                To = email.To,
+                Subject = email.Subject,
+                Body = email.Body
             };
 
             // if you put something wrong here for action name or parameters,

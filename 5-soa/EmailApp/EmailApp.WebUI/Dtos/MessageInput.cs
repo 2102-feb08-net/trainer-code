@@ -6,7 +6,6 @@ namespace EmailApp.WebUI.Dtos
 {
     public class MessageInput
     {
-        [Required]
         [PastDate]
         public DateTimeOffset? Date { get; set; }
 

@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using EmailApp.DataAccess;
 using EmailApp.DataAccess.EfModel;
@@ -32,7 +30,7 @@ namespace EmailApp.IntegrationTests
             var repo = new MessageRepository(context);
 
             // act
-            Business.Email email = await repo.GetAsync(insertedEmail.Guid);
+            Business.Email email = await repo.GetByIdAsync(insertedEmail.Guid);
 
             // assert
             Assert.Equal(insertedEmail.Guid, email.Id);
@@ -63,7 +61,7 @@ namespace EmailApp.IntegrationTests
             var repo = new MessageRepository(context);
 
             // act
-            var returnedEmail = await repo.CreateAsync(emailToCreate);
+            var returnedEmail = await repo.AddAsync(emailToCreate);
             // (that method doesn't save changes, so i need to use the same context instance to verify)
 
             // assert

@@ -18,15 +18,16 @@ namespace EmailApp.UnitTests
         public async Task CleanInbox_CleansOneSpam()
         {
             // arrange
+            var address = "a@a.com";
             var emails = new[]
             {
-                new Email { Id = Guid.NewGuid(), From = "kevin@kevin.com" },
-                new Email { Id = Guid.NewGuid(), From = "a@a.com" }
+                new Email { Id = Guid.NewGuid(), From = "kevin@kevin.com", To = address },
+                new Email { Id = Guid.NewGuid(), From = "b@b.com", To = address }
             };
 
             var mockRepo = new Mock<IMessageRepository>();
-            mockRepo.Setup(r => r.ListAsync()).ReturnsAsync(emails).Verifiable();
-            mockRepo.Setup(r => r.DeleteAsync(It.IsAny<Guid>())).Verifiable();
+            mockRepo.Setup(r => r.ListByRecipientAsync(address)).ReturnsAsync(emails);
+            mockRepo.Setup(r => r.DeleteByIdAsync(It.IsAny<Guid>()));
 
             var mockUow = new Mock<IUnitOfWork>();
             mockUow.Setup(u => u.MessageRepository).Returns(mockRepo.Object);
@@ -34,13 +35,14 @@ namespace EmailApp.UnitTests
             var cleaner = new InboxCleaner(mockUow.Object);
 
             // act
-            await cleaner.CleanInboxAsync();
+            await cleaner.CleanInboxAsync(address);
 
             // assert
-            mockRepo.Verify(r => r.ListAsync());
-            mockRepo.Verify(r => r.DeleteAsync(emails[0].Id), Times.Once); // would be nice to verify it was awaited
+            mockRepo.Verify(r => r.ListByRecipientAsync(address), Times.Once);
+            mockRepo.Verify(r => r.DeleteByIdAsync(emails[0].Id), Times.Once); // would be nice to verify it was awaited
             mockRepo.VerifyNoOtherCalls();
             mockUow.Verify(u => u.SaveAsync());
+            mockUow.VerifyNoOtherCalls();
         }
     }
 }

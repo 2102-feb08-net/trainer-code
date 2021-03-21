@@ -6,9 +6,10 @@ namespace EmailApp.Business
 {
     public interface IMessageRepository
     {
-        Task<Email> GetAsync(Guid id);
+        Task<Email> GetByIdAsync(Guid id);
         Task<IEnumerable<Email>> ListAsync();
-        Task<Email> CreateAsync(Email email);
-        Task DeleteAsync(Guid id);
+        Task<IEnumerable<Email>> ListByRecipientAsync(string to);
+        Task<Email> AddAsync(Email email);
+        Task DeleteByIdAsync(Guid id);
     }
 }
