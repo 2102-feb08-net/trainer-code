@@ -1,9 +1,12 @@
-# Node.js with Angular
-# Build a Node.js project that uses Angular.
-# Add steps that analyze code, save build artifacts, deploy, and more:
-# https://docs.microsoft.com/azure/devops/pipelines/languages/javascript
-
 trigger:
+  branches:
+    include:
+    - main
+  paths:
+    include:
+    - 6-angular/email-ui
+
+pr:
   branches:
     include:
     - main
@@ -27,7 +30,7 @@ steps:
   displayName: npm install
   workingDirectory: $(appDirectory)
 
-- script: npx ng build
+- script: npx ng build --prod
   displayName: ng build
   workingDirectory: $(appDirectory)
 
