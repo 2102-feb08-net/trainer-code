@@ -38,8 +38,7 @@ namespace EmailApp.WebUI.Controllers
             {
                 return Forbid();
             }
-
-            var messages = await _unitOfWork.MessageRepository.ListByRecipientAsync(address);
+            IEnumerable<Email> messages = await _unitOfWork.MessageRepository.ListByRecipientAsync(address);
             return messages.Select(e => new Message
             {
                 Id = e.Id,

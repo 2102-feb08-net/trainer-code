@@ -1,5 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
+using System.Threading.Tasks;
 using EmailApp.Business;
 using EmailApp.Business.TypiCode;
 using EmailApp.DataAccess;
@@ -13,6 +15,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
+using Okta.AspNetCore;
 
 namespace EmailApp.WebUI
 {
@@ -36,7 +39,10 @@ namespace EmailApp.WebUI
 
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<IMessageRepository, MessageRepository>();
+            services.AddScoped<IAccountRepository, AccountRepository>();
             services.AddScoped<IInboxCleaner, InboxCleaner>();
+
+            services.AddHttpContextAccessor();
 
             services.AddHttpClient<TypiCodeService>();
 
@@ -58,7 +64,19 @@ namespace EmailApp.WebUI
                 {
                     options.Authority = "https://dev-723797.okta.com/oauth2/default";
                     options.Audience = "api://default";
+                    //options.SaveToken = true;
                 });
+
+            //services.AddAuthentication(options =>
+            //{
+            //    options.DefaultAuthenticateScheme = OktaDefaults.ApiAuthenticationScheme;
+            //    options.DefaultChallengeScheme = OktaDefaults.ApiAuthenticationScheme;
+            //    options.DefaultSignInScheme = OktaDefaults.ApiAuthenticationScheme;
+            //})
+            //.AddOktaWebApi(new OktaWebApiOptions
+            //{
+            //    OktaDomain = "https://dev-723797.okta.com"
+            //});
 
             services.AddAuthorization(options =>
             {
@@ -73,7 +91,7 @@ namespace EmailApp.WebUI
                 options.AddPolicy("AllowedAddresses", policy => policy.RequireAssertion(context =>
                 {
                     var allowed = (IEnumerable<string>)context.Resource;
-                    string userAddress = context.User.FindFirst(ct => ct.Type.Contains("nameidentifier")).Value;
+                    string userAddress = context.User.FindFirstValue(ClaimTypes.NameIdentifier);
 
                     return allowed.Contains(userAddress);
                 }));
@@ -103,6 +121,24 @@ namespace EmailApp.WebUI
 
             app.UseAuthentication();
             app.UseAuthorization();
+
+            // if this is a new user, add him
+            app.Use(async (context, next) =>
+            {
+                // this could be a separate middleware class
+                // (more unit testable, could use constructor injection)
+                if (context.User.Identity.IsAuthenticated)
+                {
+                    
+                    var userAddress = context.User.FindFirstValue(ClaimTypes.NameIdentifier);
+                    var uow = context.RequestServices.GetRequiredService<IUnitOfWork>();
+                    if (await uow.AccountRepository.AddIfNotExistsAsync(userAddress))
+                    {
+                        await uow.SaveAsync();
+                    }
+                }
+                await next();
+            });
 
             app.UseEndpoints(endpoints =>
             {

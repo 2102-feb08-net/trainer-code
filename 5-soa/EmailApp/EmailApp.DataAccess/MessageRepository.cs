@@ -58,10 +58,13 @@ namespace EmailApp.DataAccess
 
         public async Task<IEnumerable<Email>> ListByRecipientAsync(string address)
         {
-            Account account = await _emailContext.Accounts
-                .Include(a => a.ReceivedMessages)
+            if (await _emailContext.Accounts
+                .Include(a => a.ReceivedMessages.Where(m => !m.IsDeleted))
                     .ThenInclude(m => m.From)
-                .FirstOrDefaultAsync(a => a.Address == address);
+                .FirstOrDefaultAsync(a => a.Address == address) is not Account account)
+            {
+                return null;
+            }
             return account.ReceivedMessages.Select(m => new Email
             {
                 Id = m.Guid,

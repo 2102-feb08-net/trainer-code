@@ -5,11 +5,11 @@
 import { OktaConfig } from '@okta/okta-angular';
 
 const oktaConfig: OktaConfig = {
-  issuer: 'https://dev-723797.okta.com/oauth2/default',
   clientId: '0oa2mo0y1cehXX75q4x7',
-  redirectUri: `${location.origin}/implicit/callback`,
+  issuer: 'https://dev-723797.okta.com/oauth2/default',
+  redirectUri: `${location.origin}/login/callback`,
+  scopes: ['openid', 'profile', 'email', 'groups'],
   pkce: true,
-  scopes: ['openid', 'email', 'profile' ],
 };
 
 export const environment = {

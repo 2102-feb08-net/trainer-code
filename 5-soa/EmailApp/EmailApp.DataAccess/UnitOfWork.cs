@@ -4,16 +4,20 @@ using EmailApp.DataAccess.EfModel;
 
 namespace EmailApp.DataAccess
 {
+    // relies on unitofwork, repositories and context all being scoped services
     public class UnitOfWork : IUnitOfWork
     {
         private readonly EmailContext _context;
 
         public IMessageRepository MessageRepository { get; }
 
-        public UnitOfWork(EmailContext context)
+        public IAccountRepository AccountRepository { get; }
+
+        public UnitOfWork(EmailContext context, IMessageRepository messageRepository, IAccountRepository accountRepository)
         {
-            MessageRepository = new MessageRepository(context);
             _context = context;
+            MessageRepository = messageRepository;
+            AccountRepository = accountRepository;
         }
 
         public async Task SaveAsync()

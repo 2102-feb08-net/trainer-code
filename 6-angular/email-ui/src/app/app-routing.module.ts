@@ -7,7 +7,7 @@ import { ProfileComponent } from './profile/profile.component';
 
 const routes: Routes = [
   { path: '', component: HomeComponent },
-  { path: 'implicit/callback', component: OktaCallbackComponent },
+  { path: 'login/callback', component: OktaCallbackComponent },
   { path: 'inbox', component: InboxComponent, canActivate: [OktaAuthGuard] },
   {
     path: 'profile',

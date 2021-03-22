@@ -6,6 +6,8 @@ namespace EmailApp.Business
     {
         IMessageRepository MessageRepository { get; }
 
+        IAccountRepository AccountRepository { get; }
+
         Task SaveAsync();
     }
 }

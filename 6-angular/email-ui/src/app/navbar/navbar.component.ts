@@ -25,7 +25,9 @@ export class NavbarComponent implements OnInit {
     this.oktaAuth.$authenticationState.subscribe((isAuthenticated) => {
       this.isAuthenticated = isAuthenticated;
       if (isAuthenticated) {
-        this.oktaAuth.getUser().then((user) => (this.user = user));
+        this.oktaAuth.getUser().then((user) => {
+          this.user = user;
+        });
       }
     });
   }
