@@ -52,7 +52,7 @@ steps:
     scannerMode: 'CLI'
     configMode: 'manual'
     cliProjectKey: '2102-feb08-net_trainer-code-email-ui'
-    cliProjectName: 'Email UI'
+    cliProjectName: 'trainer-code/5-soa/EmailApp'
     cliSources: '$(appDirectory)/src'
     extraProperties: 'sonar.javascript.lcov.reportPaths=$(appDirectory)/coverage/email-ui/lcov.info'
 

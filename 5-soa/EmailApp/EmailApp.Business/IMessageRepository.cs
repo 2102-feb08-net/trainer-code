@@ -8,7 +8,7 @@ namespace EmailApp.Business
     {
         Task<Email> GetByIdAsync(Guid id);
         Task<IEnumerable<Email>> ListAsync();
-        Task<IEnumerable<Email>> ListByRecipientAsync(string to);
+        Task<IEnumerable<Email>> ListByRecipientAsync(string address);
         Task<Email> AddAsync(Email email);
         Task DeleteByIdAsync(Guid id);
     }

@@ -70,6 +70,7 @@ stages:
       displayName: dotnet build
       workingDirectory: $(appDirectory)
 
+    # run tests separately so their results can be tracked separately
     - script: dotnet test EmailApp.UnitTests
         --configuration Release
         --collect:"XPlat Code Coverage"
@@ -108,11 +109,19 @@ stages:
         searchFolder: '$(Common.TestResultsDirectory)/int'
         testRunTitle: 'integration'
 
+    # PublishCodeCoverageResults task can't handle multiple coverage reports,
+    # so they must be merged
+    - task: reportgenerator@4
+      displayName: merge coverage reports
+      inputs:
+        reports: '$(Common.TestResultsDirectory)/**/coverage.cobertura.xml'
+        targetdir: '$(Common.TestResultsDirectory)/coverage'
+
     - task: PublishCodeCoverageResults@1
-      displayName: publish code coverage reports
+      displayName: publish code coverage report
       inputs:
         codeCoverageTool: 'Cobertura'
-        summaryFileLocation: '$(Common.TestResultsDirectory)/*/coverage.cobertura.xml'
+        summaryFileLocation: '$(Common.TestResultsDirectory)/coverage/Cobertura.xml'
 
     - task: SonarCloudAnalyze@1
       displayName: sonar run analysis
