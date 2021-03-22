@@ -33,7 +33,7 @@ export class InboxComponent implements OnInit {
       return user;
     }).then((user) => {
       if (user.email === undefined) {
-        this.error = "cannot identify user email";
+        this.error = 'cannot identify user email';
       } else {
         this.apiService.getMessages(user.email).subscribe(
           (messages) => {
