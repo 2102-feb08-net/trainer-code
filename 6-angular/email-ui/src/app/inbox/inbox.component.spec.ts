@@ -44,7 +44,7 @@ describe('InboxComponent', () => {
     expect(component.messages).toEqual(data);
   });
 
-  it("should display a message's subject on the page", () => {
+  it('should display a message\'s subject on the page', () => {
     data = [
       {
         id: 1,

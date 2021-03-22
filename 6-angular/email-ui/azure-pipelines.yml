@@ -22,9 +22,9 @@ variables:
 
 steps:
 - task: NodeTool@0
+  displayName: 'node 14'
   inputs:
     versionSpec: '14.x'
-  displayName: 'Install Node.js'
 
 - script: npm ci
   displayName: npm install
