@@ -53,7 +53,7 @@ namespace EmailApp.DataAccess.EfModel
                     Id = 1,
                     Guid = new Guid("57d462ca-a9ce-4417-b8a4-d9b59907c7a6"),
                     FromId = 1,
-                    ToId = 1,
+                    ToId = 2,
                     OrigDate = new DateTimeOffset(2021, 3, 20, 22, 37, 10, new TimeSpan(-6, 0, 0)),
                     Subject = "hello",
                     Body = "this is a message to say hello"
@@ -62,7 +62,7 @@ namespace EmailApp.DataAccess.EfModel
                 {
                     Id = 2,
                     Guid = new Guid("bd682c41-68db-4c00-9dd2-814b8013e563"),
-                    FromId = 1,
+                    FromId = 2,
                     ToId = 1,
                     OrigDate = new DateTimeOffset(2021, 3, 20, 22, 40, 1, new TimeSpan(-6, 0, 0)),
                     Subject = "Re: hello",
@@ -72,7 +72,8 @@ namespace EmailApp.DataAccess.EfModel
 
             modelBuilder.Entity<Message>().HasData(initialMessages);
             modelBuilder.Entity<Account>().HasData(
-                new Account { Id = 1, Address = "nick.escalona@revature.com" });
+                new Account { Id = 1, Address = "nick.escalona@revature.com" },
+                new Account { Id = 2, Address = "nicholasescalona@outlook.com" });
         }
     }
 }

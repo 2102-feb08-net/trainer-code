@@ -30,19 +30,25 @@ export class InboxComponent implements OnInit {
   ngOnInit(): void {
     this.oktaAuth.getUser().then((user) => {
       this.user = user;
-    });
-    this.apiService.getMessages('nick.escalona@revature.com').subscribe(
-      (messages) => {
-        // subscribe is (to simplify) like Promise.then
-        this.messages = messages;
+      return user;
+    }).then((user) => {
+      if (user.email === undefined) {
+        this.error = "cannot identify user email";
+      } else {
+        this.apiService.getMessages(user.email).subscribe(
+          (messages) => {
+            // subscribe is (to simplify) like Promise.then
+            this.messages = messages;
 
-        // this (or rather in the service) would be a good place for some validation at runtime
-        // to ensure the data coming from the backend matches expectations
-      },
-      (error) => {
-        this.error = error.message;
+            // this (or rather in the service) would be a good place for some validation at runtime
+            // to ensure the data coming from the backend matches expectations
+          },
+          (error) => {
+            this.error = error.message;
+          }
+        );
       }
-    );
+    });
     // put setup code that DOES need the DOM to be ready and linked to the object here
     // angular provides several "lifecycle hooks", ngOnInit is one
   }
