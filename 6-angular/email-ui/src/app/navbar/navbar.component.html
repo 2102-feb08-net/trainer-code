@@ -1,8 +1,16 @@
 <header>
   <nav>
     <ul>
-      <li><a routerLink="/inbox">Home</a></li>
-      <li><a routerLink="/send">New Email</a></li>
+      <li><button routerLink="/">Home</button></li>
+      <ng-container *ngIf="isAuthenticated; else loggedOutControls">
+        <li><button routerLink="/inbox">Inbox</button></li>
+        <li><button routerLink="/send">New Email</button></li>
+        <li><button routerLink="/profile">{{profileText}}</button></li>
+        <li><button (click)="logout()">Logout</button></li>
+      </ng-container>
+      <ng-template #loggedOutControls>
+        <li><button (click)="login()">Login</button></li>
+      </ng-template>
     </ul>
   </nav>
 </header>

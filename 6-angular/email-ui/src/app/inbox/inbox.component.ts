@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { EmailApiService } from '../email-api.service';
-import { catchError } from 'rxjs/operators';
 import Message from '../message';
+import { OktaAuthService } from '@okta/okta-angular';
+import { UserClaims } from '@okta/okta-auth-js';
 
 @Component({
   selector: 'app-inbox',
@@ -9,6 +10,7 @@ import Message from '../message';
   styleUrls: ['./inbox.component.css'],
 })
 export class InboxComponent implements OnInit {
+  user: UserClaims | null = null;
   messages: Message[] | null = null;
   error: string | null = null;
 
@@ -18,12 +20,18 @@ export class InboxComponent implements OnInit {
   //   belongs in an injectable/service, so that mulitple components (or other services)
   //  could have it injected.
 
-  constructor(private apiService: EmailApiService) {
+  constructor(
+    private oktaAuth: OktaAuthService,
+    private apiService: EmailApiService
+  ) {
     // put setup code that does not need the DOM to be ready and linked to the object here
   }
 
   ngOnInit(): void {
-    this.apiService.getMessages().subscribe(
+    this.oktaAuth.getUser().then((user) => {
+      this.user = user;
+    });
+    this.apiService.getMessages('nick.escalona@revature.com').subscribe(
       (messages) => {
         // subscribe is (to simplify) like Promise.then
         this.messages = messages;

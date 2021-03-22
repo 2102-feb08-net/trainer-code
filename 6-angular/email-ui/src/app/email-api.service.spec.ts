@@ -19,10 +19,11 @@ describe('EmailApiService', () => {
     spyClient.get.and.returnValue(observable);
 
     const service = new EmailApiService(spyClient);
-    const result = service.getMessages();
+    const address = 'asdf@adsf.com';
+    const result = service.getMessages(address);
 
     expect(spyClient.get).toHaveBeenCalledWith(
-      `${environment.emailApiBaseUrl}/api/mailbox/nick.escalona@revature.com`
+      `${environment.emailApiBaseUrl}/api/mailbox/${address}`
     );
     expect(result).toBe(observable);
   });

@@ -12,7 +12,7 @@ export class EmailApiService {
 
   constructor(private http: HttpClient) {}
 
-  getMessages(): Observable<Message[]> {
-    return this.http.get<Message[]>(`${this.baseUrl}/api/mailbox/nick.escalona@revature.com`);
+  getMessages(address: string): Observable<Message[]> {
+    return this.http.get<Message[]>(`${this.baseUrl}/api/mailbox/${address}`);
   }
 }
