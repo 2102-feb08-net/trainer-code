@@ -1,4 +1,5 @@
 ﻿using System;
+using Microsoft.AspNetCore.Mvc;
 
 namespace ContainerizedConsoleApp
 {
@@ -6,6 +7,8 @@ namespace ContainerizedConsoleApp
     {
         static void Main(string[] args)
         {
+            IActionResult x = null;
+
             Console.WriteLine("Hello Docker!");
         }
     }

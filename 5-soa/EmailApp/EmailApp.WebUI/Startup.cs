@@ -40,6 +40,7 @@ namespace EmailApp.WebUI
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<IMessageRepository, MessageRepository>();
             services.AddScoped<IAccountRepository, AccountRepository>();
+
             services.AddScoped<IInboxCleaner, InboxCleaner>();
 
             services.AddHttpContextAccessor();
