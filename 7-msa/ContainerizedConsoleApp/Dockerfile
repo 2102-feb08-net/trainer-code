@@ -17,11 +17,14 @@
 
 # first command in a Dockerfile: FROM, to identify the base image.
 
-#      registry
-#   (docker.io aka
-#    docker hub         repository
-#   by default)           name        tag
-#    -----------------|--------------|----
+#         image name
+#   |--------------------------------|
+#                       image name
+#      registry       |--------------|
+#   (docker.io aka     user   repos-
+#    docker hub     (library  -itory  tag
+#   by default)   by default)  name   (latest by default)
+#   |-----------------|------|-------|---|
 FROM mcr.microsoft.com/dotnet/runtime:5.0
 
 # copy from the build context to the image's file system
