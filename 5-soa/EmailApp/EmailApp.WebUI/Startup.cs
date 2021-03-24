@@ -83,9 +83,12 @@ namespace EmailApp.WebUI
             {
                 // all action methods without [AllowAnonymous] or [Authorize(...)]
                 // will default to [Authorize], i.e. must be authenticated
-                options.FallbackPolicy = new AuthorizationPolicyBuilder()
-                    .RequireAuthenticatedUser()
-                    .Build();
+                if (Configuration["AuthRequired"] == "true")
+                {
+                    options.FallbackPolicy = new AuthorizationPolicyBuilder()
+                        .RequireAuthenticatedUser()
+                        .Build();
+                }
 
                 // this could be a separate authorization handler class
                 // (more unit testable, could access dependency injection (e.g. repository) if needed)

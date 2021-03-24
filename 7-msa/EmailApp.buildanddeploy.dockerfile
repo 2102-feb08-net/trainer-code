@@ -1,6 +1,6 @@
 # to use this Dockerfile:
 # 1. docker build -t emailapp:2.0 -f EmailApp.buildanddeploy.dockerfile ../5-soa/EmailApp
-# 2. docker run --rm -it -p 5000:80 emailapp:2.0
+# 2. docker run --rm -it -p 5000:80 -e ConnectionStrings__EmailDb="(connection string here)" -e AuthRequired="false" emailapp:2.0
 
 # multi-stage build -
 #    advantages of building in the consistent environment of docker

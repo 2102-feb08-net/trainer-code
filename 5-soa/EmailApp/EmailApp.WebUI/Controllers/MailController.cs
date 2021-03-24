@@ -25,7 +25,7 @@ namespace EmailApp.WebUI.Controllers
 
         // GET api/mail
         [HttpGet]
-        [Authorize(Roles = "admin")]
+        //[Authorize(Roles = "admin")]
         public async Task<IEnumerable<Message>> Get()
         {
             var messages = await _unitOfWork.MessageRepository.ListAsync();
