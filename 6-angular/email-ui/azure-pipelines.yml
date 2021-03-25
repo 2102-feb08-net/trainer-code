@@ -1,18 +1,18 @@
-trigger:
-  branches:
-    include:
-    - main
-  paths:
-    include:
-    - 6-angular/email-ui
+trigger: none
+  # branches:
+  #   include:
+  #   - main
+  # paths:
+  #   include:
+  #   - 6-angular/email-ui
 
-pr:
-  branches:
-    include:
-    - main
-  paths:
-    include:
-    - 6-angular/email-ui
+pr: none
+  # branches:
+  #   include:
+  #   - main
+  # paths:
+  #   include:
+  #   - 6-angular/email-ui
 
 pool:
   vmImage: ubuntu-latest

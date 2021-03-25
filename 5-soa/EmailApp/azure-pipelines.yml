@@ -1,18 +1,18 @@
-trigger:
-  branches:
-    include:
-    - main
-  paths:
-    include:
-    - 5-soa/EmailApp
+trigger: none
+  # branches:
+  #   include:
+  #   - main
+  # paths:
+  #   include:
+  #   - 5-soa/EmailApp
 
-pr:
-  branches:
-    include:
-    - main
-  paths:
-    include:
-    - 5-soa/EmailApp
+pr: none
+  # branches:
+  #   include:
+  #   - main
+  # paths:
+  #   include:
+  #   - 5-soa/EmailApp
 
 pool:
   vmImage: ubuntu-latest
