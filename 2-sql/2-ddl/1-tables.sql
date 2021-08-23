@@ -25,8 +25,10 @@ SELECT MONTH(AccountCreated) FROM ChatApp.Person;
 
 -- we can put constraints on table columns.
 -- NOT NULL vs NULL.
--- by default, all columns can accept NULL as a possible value (and as their default).
---   this can be explicitly marked by putting NULL after the column definition
+-- normally, by default, all columns can accept NULL as a possible value (and as their default).
+--   this can be explicitly marked by putting NULL after the column definition.
+--   it's good practice to always explicitly mark NULL or NOT NULL, because
+--   database settings and other circumstances could change the default of NULL.
 
 -- NOT NULL prevents NULL, and leaves the column without a default value.
 
